@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file>img/spritesyellowcolor.png</file>
+    <file>img/pokeballSprite.png</file>
+  </qresource>
+</RCC>
