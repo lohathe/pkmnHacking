@@ -16,17 +16,23 @@ public:
 
   PkmnSaveState (string, bool backup = false);
 
-  vector<const PkmnSpecies *> getPartyPkmn() const;
-  int getPartyPkmnCount() const;
+  // GENERAL INFO
   int getTrainerId() const;
 
-  PkmnState* getPkmnState(int) const;
-  void setPkmnState(PkmnState*);
+  // PARTY PKMN INFO
+  vector<const PkmnSpecies *> getPartyPkmnList() const;
+  int getPartyPkmnCount() const;
 
-  bool createPkmnStateAtIndex(int);
-  bool deletePkmnStateAtIndex(int);
+  int getPartyPkmnParameter(int, int) const;
+  string getPartyPkmnName(int) const;
+  PkmnState* getPartyPkmnState(int) const;
+  bool setPartyPkmnParameter(int, int, int);
+  bool setPartyPkmnName(int, string);
+
+  bool createPartyPkmnAtIndex(int, int);
+  bool deletePartyPkmnAtIndex(int);
   
-  void saveToFile() const;
+  bool saveToFile() const;
 
 
 private:
@@ -35,15 +41,15 @@ private:
   byte *_data;
   int _dataLength;
 
-  static const int TRAINER_OFFSET        = 0x2605;
-  static const int BELT_PKMN_NMBR_OFFSET = 0x2F2C;
-  static const int BELT_PKMN_SPCS_OFFSET = 0x2F2D;
-  static const int PKMN_STATE_OFFSET     = 0x2F34;
-  static const int PKMN_NAMES_OFFSET     = 0x307E;
-  static const int CHECKSUM_OFFSET       = 0x3523;
+  static const int TRAINER_OFFSET            = 0x2605;
+  static const int PARTY_PKMN_COUNT_OFFSET   = 0x2F2C;
+  static const int PARTY_PKMN_SPECIES_OFFSET = 0x2F2D;
+  static const int PARTY_PKMN_STATE_OFFSET   = 0x2F34;
+  static const int PARTY_PKMN_NAMES_OFFSET   = 0x307E;
+  static const int CHECKSUM_OFFSET           = 0x3523;
 
   byte checksum () const;
-  bool pkmnExistsAtIndex (int) const;
+  bool pkmnExistsAtPartyIndex (int) const;
 
 };
 

@@ -1,47 +1,111 @@
-#ifndef PKMN_SAVE_STATE_MODEL
-#define PKMN_SAVE_STATE_MODEL
+#include "pkmnsavestatemodel.h"
 
-#include <QObject>
 
-#include <vector>
-using std::vector;
+PkmnSaveStateModel::PkmnSaveStateModel (PkmnSaveState *savestate) :
+  _saveState(savestate) {
 
-#include "pkmnsavestate.h"
-#include "pkmnstate.h"
-#include "pkmnspecies.h"
+}
 
-class PkmnSaveStateModel : public QObject {
+int PkmnSaveStateModel::getTrainerId() const {
 
-  Q_OBJECT;
+  return _saveState -> getTrainerId();
 
-private:
+}
 
-  PkmnSaveState* _saveState;
+vector<const PkmnSpecies *> PkmnSaveStateModel::getPartyPkmnList() const {
 
-public:
+  return _saveState -> getPartyPkmnList();
 
-  PkmnSaveStateModel (PkmnSaveState*);
+}
 
-  vector<const PkmnSpecies *> getPkmnList() const;
-  PkmnState* getPkmnInfo(int) const;
-  int getPkmnListNumber() const;
-  int getTrainerId() const;
-  
-  void setPkmnState(PkmnState*);
-  
-  bool createPkmnAtIndex(int);
-  bool deletePkmnAtIndex(int);
-  
-  void saveToFile() const;
+int PkmnSaveStateModel::getPartyPkmnCount() const {
 
-signals:
+  return _saveState -> getPartyPkmnCount();
 
-  //void changedPkmnList(int, Pkmn*);
-  void changedPkmnListEvent();
-  void changedPkmnInfoEvent();
+}
 
-public slots:
+int  PkmnSaveStateModel::getPartyPkmnParameter(int partyIndex, int info) {
 
-};
+  return _saveState -> getPartyPkmnParameter(partyIndex, info);
 
-#endif // PKMN_SAVE_STATE_MODEL
+}
+
+string PkmnSaveStateModel::getPartyPkmnName(int partyIndex) {
+
+  return _saveState -> getPartyPkmnName(partyIndex);
+
+}
+
+PkmnState* PkmnSaveStateModel::getPartyPkmnInfo(int partyIndex) const {
+
+  return _saveState -> getPartyPkmnState(partyIndex);
+}
+
+bool PkmnSaveStateModel::setPartyPkmnParameter(int partyIndex, int info, int value) {
+
+  bool outcome;
+  outcome = _saveState -> setPartyPkmnParameter(partyIndex, info, value);
+
+  if (outcome) {
+    emit changedPkmnPartyInfoEvent();
+    if (info == SPECIES)
+      emit changedPkmnPartyListEvent();
+  }
+
+  return outcome;
+
+}
+bool PkmnSaveStateModel::setPartyPkmnName(int partyIndex, string value) {
+
+  bool outcome;
+  outcome = _saveState -> setPartyPkmnName(partyIndex, value);
+
+  if (outcome) {
+    emit changedPkmnPartyInfoEvent();
+  }
+
+  return outcome;
+
+}
+
+bool PkmnSaveStateModel::createPartyPkmnAtIndex(int partyIndex, int species) {
+
+  bool outcome;
+  outcome = _saveState -> createPartyPkmnAtIndex(partyIndex, species);
+
+  if (outcome) {
+    emit changedPkmnPartyListEvent();
+    emit changedPkmnPartyInfoEvent();
+  }
+
+  return outcome;
+
+}
+
+bool PkmnSaveStateModel::deletePartyPkmnAtIndex(int partyIndex) {
+
+  bool outcome;
+  outcome = _saveState -> deletePartyPkmnAtIndex(partyIndex);
+
+  if (outcome) {
+    emit changedPkmnPartyListEvent();
+    emit changedPkmnPartyInfoEvent();
+  }
+
+  return outcome;
+
+}
+
+bool PkmnSaveStateModel::saveToFile() const {
+
+  return _saveState -> saveToFile();
+
+}
+
+
+
+
+//signals:
+
+void changedPkmnPartyListEvent();
+void changedPkmnPartyInfoEvent();

@@ -1,6 +1,6 @@
-#include "stringreader.h"
+#include "pkmnstringreader.h"
 
-string StringReader::toStdString(const byte *name) {
+string PkmnStringReader::toStdString(const byte *name) {
   string result = "";
   
   for (int i=0; i<11; ++i) {
@@ -24,7 +24,7 @@ string StringReader::toStdString(const byte *name) {
   return result;
 }
 
-byte* StringReader::fromStdString(const string &name) {
+byte* PkmnStringReader::fromStdString(const string &name) {
 
   byte* result = new byte[11];
   

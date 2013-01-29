@@ -1,73 +1,97 @@
-#ifndef PKMN_STATE
-#define PKMN_STATE
+#include "pkmnstate.h"
+#include "pkmnstringreader.h"
 
-#include <string>
-using std::string;
-#include "pkmndataformat.h"
+PkmnState::PkmnState(const byte *data, const byte *name) {
+  for (int i=0; i<44; i++) {
+      _data[i] = data[i];
+    }
+    for (int i=0; i<11; i++) {
+      _name[i] = name[i];
+    }
+}
 
-enum PkmnStateInfo {
-  SPECIES   = 0x00000001,
-  HP        = 0x00000002,
-  LEVELN    = 0x00000004,
-  ALIMENT   = 0x00000008,
-  TYPE1     = 0x00000010,
-  TYPE2     = 0x00000020,
-  CATCHRATE = 0x00000040,
-  MOVE1     = 0x00000080,
-  MOVE2     = 0x00000100,
-  MOVE3     = 0x00000200,
-  MOVE4     = 0x00000400,
-  TRAINER   = 0x00000800,
-  EXP       = 0x00001000,
-  HPEV      = 0x00002000,
-  ATTEV     = 0x00004000,
-  DEFEV     = 0x00008000,
-  SPDEV     = 0x00010000,
-  SPCEV     = 0x00020000,
-  IV        = 0x00040000,
-  MOVE1PP   = 0x00080000,
-  MOVE2PP   = 0x00100000,
-  MOVE3PP   = 0x00200000,
-  MOVE4PP   = 0x00400000,
-  LEVEL     = 0x00800000,
-  MAXHP     = 0x01000000,
-  ATT       = 0x02000000,
-  DEF       = 0x04000000,
-  SPD       = 0x08000000,
-  SPC       = 0x10000000
-};
+int PkmnState::getMinValue (int info) {
+  int result = 0;
+  if (info & (SPECIES)) result = 0x01;
+  else if (info & (IV)) result = 0x00;
+  else if (info & (HP | MAXHP | ATT | DEF | SPD | SPC)) result = 0x01;
+  else if (info & (LEVEL | LEVELN)) result = 0x01;
+  else if (info & (ALIMENT)) result = 0x00;
+  else if (info & (TYPE1 | TYPE2)) result = 0x00;
+  else if (info & (MOVE1 | MOVE2 | MOVE3 | MOVE4)) result = 0x00;
+  else if (info & (MOVE1PP | MOVE2PP | MOVE3PP | MOVE4PP)) result = 0x00;
+  else if (info & (EXP)) result = 0x01;
+  else if (info & (TRAINER)) result = 0x00;
+  else if (info & (HPEV | ATTEV | DEFEV | SPDEV | SPCEV)) result = 0x00;
+  return result;
+}
+int PkmnState::getMaxValue (int info) {
+  int result = 0xFF;
+  if (info & (SPECIES)) result = 0xBE;
+  else if (info & (HP | MAXHP | ATT | DEF | SPD | SPC)) result = 0xFFFF;
+  else if (info & (LEVEL | LEVELN)) result = 0x63;
+  else if (info & (ALIMENT)) result = 0x40;
+  else if (info & (TYPE1 | TYPE2)) result = 0x1A;
+  else if (info & (MOVE1 | MOVE2 | MOVE3 | MOVE4)) result = 0xA5;
+  else if (info & (MOVE1PP | MOVE2PP | MOVE3PP | MOVE4PP)) result = 0xFF;
+  else if (info & (EXP)) result = 0xFFFFFF;
+  else if (info & (TRAINER)) result = 0xFFFF;
+  else if (info & (HPEV | ATTEV | DEFEV | SPDEV | SPCEV | IV)) result = 0xFFFF;
+  return result;
+}
+int PkmnState::getOffset (int info) {
+  switch (info) {
+    case SPECIES   : return 0x00;
+    case HP        : return 0x01;
+    case LEVELN    : return 0x03;
+    case ALIMENT   : return 0x04;
+    case TYPE1     : return 0x05;
+    case TYPE2     : return 0x06;
+    case CATCHRATE : return 0x07;
+    case MOVE1     : return 0x08;
+    case MOVE2     : return 0x09;
+    case MOVE3     : return 0x0A;
+    case MOVE4     : return 0x0B;
+    case TRAINER   : return 0x0C;
+    case EXP       : return 0x0E;
+    case HPEV      : return 0x11;
+    case ATTEV     : return 0x13;
+    case DEFEV     : return 0x15;
+    case SPDEV     : return 0x17;
+    case SPCEV     : return 0x19;
+    case IV        : return 0x1B;
+    case MOVE1PP   : return 0x1D;
+    case MOVE2PP   : return 0x1E;
+    case MOVE3PP   : return 0x1F;
+    case MOVE4PP   : return 0x20;
+    case LEVEL     : return 0x21;
+    case MAXHP     : return 0x22;
+    case ATT       : return 0x24;
+    case DEF       : return 0x26;
+    case SPD       : return 0x28;
+    case SPC       : return 0x2A;
+  }
+  return 0x00;
+}
+int PkmnState::getInfoSize (int info) {
+  int twobyteinfo = HP | TRAINER | HPEV | ATTEV | DEFEV | SPDEV | SPCEV |
+                    IV | MAXHP | ATT | DEF | SPD | SPC;
+  int threebyteinfo = EXP;
+  if ( (info & twobyteinfo) != 0   ) return 2;
+  if ( (info & threebyteinfo) != 0 ) return 3;
+  return 1;
+}
 
-class PkmnState {
+int PkmnState::get (int info) const {
+  int result = 0;
+  int startingOffset = PkmnState::getOffset(info);
+  for (int i=0; i<PkmnState::getInfoSize(info); i++) {
+    result = (result<<8) | _data[startingOffset + i];
+  }
+  return result;
+}
 
-public:
+string PkmnState::getName() const {
+  return PkmnStringReader::toStdString(_name);
+}
 
-  PkmnState(const byte*, const byte*, int);
-  void setDefaultParameters();
-
-  int get(int) const;
-  void set(int, int);
-
-  static int getMinValue (int);
-  static int getMaxValue (int);
-  
-  string getName() const;
-  void setName(const string &);
-  
-  const byte* getUnformattedData() const;
-  const byte* getUnformattedName() const;
-  int getPartyIndex() const;
-
-  bool isValid() const;
-
-private:
-
-  byte _data[44];
-  byte _name[11];
-  int _partyIndex;
-  
-  static int getOffset   (int);
-  static int getInfoSize (int);
-
-};
-
-#endif // PKMN_STATE

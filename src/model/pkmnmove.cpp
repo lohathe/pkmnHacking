@@ -1,23 +1,23 @@
 #include "pkmnmove.h"
 
-PkmnMove::PkmnMove (int index, const string &name, byte element, 
+PkmnMove::PkmnMove (int id, const string &name, byte element,
                     byte type, int pp, int power, int accuracy) :
-  _index(index), _name(name), _element(element), _type(type), _pp(pp), 
+  _id(id), _name(name), _element(element), _type(type), _pp(pp),
   _power(power), _accuracy(accuracy) { }
 
-int getId () const { return _id; }
+int PkmnMove::getId () const { return _id; }
 
-string getName () const { return _name; }
+string PkmnMove::getName () const { return _name; }
 
-byte getElement () const { return _element; }
+byte PkmnMove::getElement () const { return _element; }
 
-byte getType () const { return _type; }
+byte PkmnMove::getType () const { return _type; }
 
-int getPP () const { return _pp; }
+int PkmnMove::getPP () const { return _pp; }
 
-int getPwr () const { return _power; }
+int PkmnMove::getPwr () const { return _power; }
 
-int getAcc () const { return _accuracy; }
+int PkmnMove::getAcc () const { return _accuracy; }
 
 const PkmnMove *PkmnMoveList::get (int index) {
   if (index < 0 || index > 165)
@@ -27,7 +27,7 @@ const PkmnMove *PkmnMoveList::get (int index) {
 
 const PkmnMove *PkmnMoveList::get (const string &name) {
   for (int i=0; i<166; ++i) {
-    if (_movesList[i]._name == name)
+    if (_movesList[i].getName() == name)
       return &_movesList[i];
   }
   return &_movesList[0];
@@ -36,7 +36,7 @@ const PkmnMove *PkmnMoveList::get (const string &name) {
 vector<const PkmnMove *> PkmnMoveList::getByElement(byte element) {
   vector<const PkmnMove *> result;
   for (int i=1; i<166; ++i) {
-    if (_movesList[i]._element == element)
+    if (_movesList[i].getElement() == element)
       result.push_back(&_movesList[i]);
   }
   return result;
@@ -44,7 +44,7 @@ vector<const PkmnMove *> PkmnMoveList::getByElement(byte element) {
 vector<const PkmnMove *> PkmnMoveList::getByType(byte type) {
   vector<const PkmnMove *> result;
   for (int i=1; i<166; ++i) {
-    if (_movesList[i]._type == type)
+    if (_movesList[i].getType() == type)
       result.push_back(&_movesList[i]);
   }
   return result;

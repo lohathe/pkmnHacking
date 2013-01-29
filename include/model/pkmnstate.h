@@ -41,32 +41,20 @@ class PkmnState {
 
 public:
 
-  PkmnState(const byte*, const byte*, int);
-  void setDefaultParameters();
-
-  int get(int) const;
-  void set(int, int);
-
   static int getMinValue (int);
   static int getMaxValue (int);
-  
-  string getName() const;
-  void setName(const string &);
-  
-  const byte* getUnformattedData() const;
-  const byte* getUnformattedName() const;
-  int getPartyIndex() const;
+  static int getOffset   (int);
+  static int getInfoSize (int);
 
-  bool isValid() const;
+  PkmnState(const byte*, const byte*);
+
+  int get(int) const;
+  string getName() const;
 
 private:
 
   byte _data[44];
   byte _name[11];
-  int _partyIndex;
-  
-  static int getOffset   (int);
-  static int getInfoSize (int);
 
 };
 

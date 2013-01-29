@@ -15,7 +15,10 @@ DEPENDPATH += . \
               src/controller \
               src/model \
               src/view
-INCLUDEPATH += . include/model
+INCLUDEPATH += . \
+           include/model \
+           include/controller \
+           include/view
 
 # Input
 HEADERS += include/controller/pkmnpartycontroller.h \

@@ -3,23 +3,23 @@
 
 #include <algorithm>
 
-Pkmn::Pkmn (int id, int index, string name, byte element1, byte element2) :
+PkmnSpecies::PkmnSpecies (int id, int index, string name, byte element1, byte element2) :
   _id(id), _index(index), _name(name), _element1(element1), _element2(element2) { }
 
-Pkmn::Pkmn () : _id(0x00), _index(0x1F), _name("Missingno."), 
+PkmnSpecies::PkmnSpecies () : _id(0x00), _index(0x1F), _name("Missingno."),
   _element1(Element::FLYING), _element2(Element::NORMAL) { }
 
-bool Pkmn::isValid() const { return (_index != 0x00); }
+bool PkmnSpecies::isValid() const { return (_index != 0x00); }
 
-int Pkmn::getIndex() const { return _index; }
+int PkmnSpecies::getIndex() const { return _index; }
 
-int Pkmn::getId() const { return _id; }
+int PkmnSpecies::getId() const { return _id; }
 
-string Pkmn::getName() const { return _name; }
+string PkmnSpecies::getName() const { return _name; }
 
-byte Pkmn::getElement1() const { return _element1; }
+byte PkmnSpecies::getElement1() const { return _element1; }
 
-byte Pkmn::getElement2() const { return _element2; }
+byte PkmnSpecies::getElement2() const { return _element2; }
 
 const PkmnSpecies * PkmnSpeciesList::get(const int index) {
 
@@ -39,13 +39,13 @@ const PkmnSpecies* PkmnSpeciesList::get(const string &name) {
 
 }
 
-bool comparePkmnOrder(const Pkmn *o1, const Pkmn *o2) {
+bool comparePkmnOrder(const PkmnSpecies *o1, const PkmnSpecies *o2) {
   return (o1->getIndex() < o2->getIndex());
 }
 
 vector<const PkmnSpecies *> PkmnSpeciesList::getBy(int filter, int value) {
 
-  vector<const Pkmn *> result;
+  vector<const PkmnSpecies *> result;
 
   for (int i=0; i<190; ++i) {
     int fetchedValue = 0;

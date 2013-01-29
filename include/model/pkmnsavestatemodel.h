@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include <string>
+using std::string;
 #include <vector>
 using std::vector;
 
@@ -12,35 +14,40 @@ using std::vector;
 
 class PkmnSaveStateModel : public QObject {
 
-  Q_OBJECT;
-
-private:
-
-  PkmnSaveState* _saveState;
+  Q_OBJECT
 
 public:
 
   PkmnSaveStateModel (PkmnSaveState*);
 
-  vector<const PkmnSpecies *> getPkmnList() const;
-  PkmnState* getPkmnInfo(int) const;
-  int getPkmnListNumber() const;
   int getTrainerId() const;
+
+  vector<const PkmnSpecies *> getPartyPkmnList() const;
+  int getPartyPkmnCount() const;
+
+  int  getPartyPkmnParameter(int, int);
+  string getPartyPkmnName(int);
+  PkmnState* getPartyPkmnInfo(int) const;
+  bool setPartyPkmnParameter(int, int, int);
+  bool setPartyPkmnName(int, string);
   
-  void setPkmnState(PkmnState*);
+  bool createPartyPkmnAtIndex(int, int);
+  bool deletePartyPkmnAtIndex(int);
   
-  bool createPkmnAtIndex(int);
-  bool deletePkmnAtIndex(int);
-  
-  void saveToFile() const;
+  bool saveToFile() const;
 
 signals:
 
-  //void changedPkmnList(int, Pkmn*);
-  void changedPkmnListEvent();
-  void changedPkmnInfoEvent();
+  void changedPkmnPartyListEvent();
+  void changedPkmnPartyInfoEvent();
 
 public slots:
+
+
+private:
+
+  PkmnSaveState* _saveState;
+
 
 };
 
