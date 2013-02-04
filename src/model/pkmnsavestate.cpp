@@ -80,8 +80,8 @@ int PkmnSaveState::getPartyPkmnParameter(int partyIndex, int info) const {
 
   for (int i=0; i<PkmnState::getInfoSize(info); i++) {
     result = (result<<8) |
-        _data[PkmnSaveState::PARTY_PKMN_STATE_OFFSET +
-              44*(partyIndex-1) + startingOffset + i];
+        (_data[PkmnSaveState::PARTY_PKMN_STATE_OFFSET +
+              44*(partyIndex-1) + startingOffset + i] & 0xFF);
   }
 
   return result;

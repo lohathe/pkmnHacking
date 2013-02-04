@@ -6,7 +6,7 @@
 PkmnSpecies::PkmnSpecies (int id, int index, string name, byte element1, byte element2) :
   _id(id), _index(index), _name(name), _element1(element1), _element2(element2) { }
 
-PkmnSpecies::PkmnSpecies () : _id(0x00), _index(0x1F), _name("Missingno."),
+PkmnSpecies::PkmnSpecies () : _id(0x1F), _index(0x00), _name("Missingno."),
   _element1(Element::FLYING), _element2(Element::NORMAL) { }
 
 bool PkmnSpecies::isValid() const { return (_index != 0x00); }

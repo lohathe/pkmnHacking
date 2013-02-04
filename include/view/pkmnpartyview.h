@@ -6,6 +6,11 @@ using std::string;
 
 #include <QWidget>
 
+#include "pkmnspeciespickerview.h"
+#include "pkmnmovepickerview.h"
+#include "pkmnpartylistview.h"
+#include "pkmninfoview.h"
+
 class PkmnSaveStateModel;
 
 class PkmnPartyView : public QWidget {
@@ -14,10 +19,12 @@ class PkmnPartyView : public QWidget {
 
 public:
 
-  PkmnPartyView(QWidget *, PkmnSaveStateModel *);
+  PkmnPartyView(QWidget *);
 
-  void updateSelectedPartyPkmn(int);
-  void displayPkmnInfo(int);
+  void connectModel(PkmnSaveStateModel *);
+
+  void setSelectedPartyPkmn(int);
+  void displayPkmnInfo();
   void displaySpeciesPicker();
   void displayMovePicker();
 
@@ -28,13 +35,34 @@ signals:
   void createPkmnEvent();
   void deletePkmnEvent();
 
+  void pkmnSpeciesChangeEvent();
+  void pkmnMoveChangeEvent(int);
   void pkmnSpeciesSelectedEvent(int);
   void pkmnNameChangedEvent(const string &);
   void pkmnParameterChangedEvent(int, int);
 
   void saveToFileEvent();
 
+public slots:
+
+  void manageChangedPkmnPartyList();
+  void manageChangedPkmnPartyInfo();
+  void managePkmnNameChanged(const string &);
+  void managePkmnParameterChanged(int, int);
+  void managePkmnSpeciesChange();
+  void managePkmnMoveChange(int);
+
+
 private:
+
+  int _selectedPartyPkmn;
+  bool _disableUpdate;
+  PkmnSaveStateModel *_model;
+
+  PkmnInfoView *_pkmnInfo;
+  PkmnSpeciesPickerView *_speciesPicker;
+  PkmnMovePickerView *_movePicker;
+  PkmnPartyListView *_partyList;
 
 };
 

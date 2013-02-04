@@ -15,18 +15,27 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
 
   connect(_view, SIGNAL(createPkmnEvent()), this, SLOT(manageCreatePkmn()));
   connect(_view, SIGNAL(deletePkmnEvent()), this, SLOT(manageDeletePkmn()));
+
+  connect(_view, SIGNAL(pkmnSpeciesChangeEvent()),
+          this,  SLOT(manageSpeciesChange()));
   connect(_view, SIGNAL(pkmnSpeciesSelectedEvent(int)),
           this,  SLOT(managePkmnSpeciesSelected(int)));
   connect(_view, SIGNAL(pkmnNameChangedEvent(string)),
           this,  SLOT(managePkmnNameChanged(string)));
   connect(_view, SIGNAL(pkmnParameterChangedEvent(int,int)),
           this,  SLOT(managePkmnParameterChanged(int,int)));
+  connect(_view, SIGNAL(pkmnMoveChangeEvent(int)),
+          this,  SLOT(manageMoveChange(int)));
 
   connect(_view, SIGNAL(saveToFileEvent()), this, SLOT(manageSaveToFile()));
 
   // Detect something went wrong
   connect(this, SIGNAL(operationOutcomeEvent(bool, string)),
           this, SLOT(manageOperationOutcome(bool, string)));
+
+  // ACTIVATE VIEW
+  _view -> connectModel(model);
+  _view -> manageChangedPkmnPartyList();
 
 }
 
@@ -42,8 +51,8 @@ void PkmnPartyController::managePartyPkmnSelected(int selectedPartyIndex) {
   _isChangingMove = false;
   _selectedPartyIndex = selectedPartyIndex;
 
-  _view -> updateSelectedPartyPkmn(_selectedPartyIndex);
-  _view -> displayPkmnInfo(_selectedPartyIndex);
+  _view -> setSelectedPartyPkmn(_selectedPartyIndex);
+  _view -> displayPkmnInfo();
 
 }
 
@@ -88,8 +97,8 @@ void PkmnPartyController::manageDeletePkmn() {
 
   _selectedPartyIndex = 0;
 
-  _view -> updateSelectedPartyPkmn(_selectedPartyIndex);
-  _view -> displayPkmnInfo(_selectedPartyIndex);
+  _view -> setSelectedPartyPkmn(_selectedPartyIndex);
+  _view -> displayPkmnInfo();
 
   emit operationOutcomeEvent(true,
                              "Successfully deleted selected pokemon from party.");
@@ -109,6 +118,14 @@ void PkmnPartyController::manageMoveChange(int selectedMoveIndex) {
   }
 
   _view -> displayMovePicker();
+
+}
+
+void PkmnPartyController::manageSpeciesChange() {
+
+  _isCreatingPkmn = false;
+  _isChangingMove = false;
+  _view -> displaySpeciesPicker();
 
 }
 
@@ -140,8 +157,8 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
     managePkmnParameterChanged(SPECIES, selectedSpecies);
   }
 
-  _view -> updateSelectedPartyPkmn(_selectedPartyIndex);
-  _view -> displayPkmnInfo(_selectedPartyIndex);
+  _view -> setSelectedPartyPkmn(_selectedPartyIndex);
+  _view -> displayPkmnInfo();
 
 }
 
@@ -156,7 +173,7 @@ void PkmnPartyController::managePkmnMoveSelected(int selectedMove) {
 
   _model -> setPartyPkmnParameter(_selectedPartyIndex, _selectedMoveIndex, selectedMove);
 
-  _view -> displayPkmnInfo(_selectedPartyIndex);
+  _view -> displayPkmnInfo();
 
 }
 
@@ -319,3 +336,5 @@ void PkmnPartyController::managePPParameter(int parameter, int newValue) {
   _model -> setPartyPkmnParameter(_selectedPartyIndex, parameter, value);
 
 }
+
+void PkmnPartyController::manageOperationOutcome(bool b, const string &s) {}

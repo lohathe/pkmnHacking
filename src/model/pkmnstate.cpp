@@ -86,7 +86,7 @@ int PkmnState::get (int info) const {
   int result = 0;
   int startingOffset = PkmnState::getOffset(info);
   for (int i=0; i<PkmnState::getInfoSize(info); i++) {
-    result = (result<<8) | _data[startingOffset + i];
+    result = (result*256) + (static_cast<int>(_data[startingOffset + i]) & 0xFF);
   }
   return result;
 }

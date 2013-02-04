@@ -29,6 +29,7 @@ public slots:
   // MODIFY THE MODEL
   void manageCreatePkmn();
   void manageDeletePkmn();
+  void manageSpeciesChange();
   void manageMoveChange(int);
 
   void managePkmnSpeciesSelected(int);
