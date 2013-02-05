@@ -74,12 +74,10 @@ private:
                *_move3,
                *_move4;
   PkmnToolButton *_species;
-  QLabel       *_speciesName,
-               *_type1,
-               *_type2;
 
-  void organizeLayout(QVBoxLayout *);
-  void organizeLayout(QGridLayout *);
+  QLayout *organizeLayoutGeneralInfo();
+  QLayout *organizeLayoutStatistics();
+  QLayout *organizeLayoutMoves();
 
 };
 

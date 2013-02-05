@@ -153,134 +153,123 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   connect(_move4, SIGNAL(buttonClicked(int)),
           this, SIGNAL(moveChangeEvent(int)));
 
-  _species     = new PkmnToolButton(this, SPECIES);
-  _species -> setFixedSize(scale*imgDim+3, scale*imgDim+50);
+  _species = new PkmnToolButton(this, SPECIES);
+  _species -> setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+  _species -> setFixedSize(scale*imgDim+20, scale*imgDim+60);
   _species -> setIconSize(QSize(scale*imgDim, scale*imgDim));
   connect(_species, SIGNAL(buttonClicked(int)),
           this, SIGNAL(speciesChangeEvent()));
 
-  //_speciesName = new QLabel(this);
-  //_type1       = new QLabel(this);
-  //_type2       = new QLabel(this);
-
-  QGridLayout *layout = new QGridLayout(this);
-  //QVBoxLayout *layout = new QVBoxLayout(this);
-  organizeLayout(layout);
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout -> addLayout(organizeLayoutGeneralInfo());
+  layout -> addLayout(organizeLayoutStatistics());
+  layout -> addLayout(organizeLayoutMoves());
+  layout -> addStretch(1);
 
   updateInfo(NULL);
   setLayout(layout);
 
 }
 
-void PkmnInfoView::organizeLayout(QGridLayout *layout) {
+QLayout *PkmnInfoView::organizeLayoutGeneralInfo() {
 
-  layout->addWidget(new QLabel("Nickname:", this), 0, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(_pkmnName,    0, 1, 1, 3);
-  layout->addWidget(new QLabel("Trainer:", this), 0, 4, 1, 1, Qt::AlignRight);
-  layout->addWidget(_pkmnTrainer, 0, 5, 1, 1);
-  layout->addWidget(new QLabel("Lvl:", this), 1, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(_pkmnLevel,   1, 1, 1, 3);
-  layout->addWidget(new QLabel("Exp:", this), 1, 4, 1, 1, Qt::AlignRight);
-  layout->addWidget(_pkmnExp,     1, 5, 1, 1);
+  QGridLayout *result = new QGridLayout();
 
-  layout->addWidget(_species,     2, 0, 5, 1);
-  layout->addWidget(new QLabel("PP", this),   2, 4, 1, 1);
-  layout->addWidget(new QLabel("PPUP", this), 2, 5, 1, 1);
-  layout->addWidget(_move1,       3, 1, 1, 3);
-  layout->addWidget(_move2,       4, 1, 1, 3);
-  layout->addWidget(_move3,       5, 1, 1, 3);
-  layout->addWidget(_move4,       6, 1, 1, 3);
-  layout->addWidget(_move1pp,     3, 4, 1, 1);
-  layout->addWidget(_move2pp,     4, 4, 1, 1);
-  layout->addWidget(_move3pp,     5, 4, 1, 1);
-  layout->addWidget(_move4pp,     6, 4, 1, 1);
-  layout->addWidget(_move1ppup,   3, 5, 1, 1);
-  layout->addWidget(_move2ppup,   4, 5, 1, 1);
-  layout->addWidget(_move3ppup,   5, 5, 1, 1);
-  layout->addWidget(_move4ppup,   6, 5, 1, 1);
-  //layout->addWidget(_speciesName, );
-  //layout->addWidget(_type1);
-  //layout->addWidget(_type2);
+  result->addWidget(new QLabel("Nickname:",this), 0, 0, 1, 1, Qt::AlignRight);
+  result->addWidget(_pkmnName, 0, 1, 1, 3);
+  result->addWidget(new QLabel("Trainer:", this), 1, 0, 1, 1, Qt::AlignRight);
+  result->addWidget(_pkmnTrainer, 1, 1, 1, 3);
+  result->addWidget(new QLabel("Lvl:", this), 2, 0, 1, 1, Qt::AlignRight);
+  result->addWidget(_pkmnLevel,   2, 1, 1, 1);
+  result->addWidget(new QLabel("Exp:", this), 2, 2, 1, 1, Qt::AlignRight);
+  result->addWidget(_pkmnExp,     2, 3, 1, 1);
+  result->addWidget(new QLabel("Aliment:", this), 3, 0, 1, 1, Qt::AlignRight);
+  result->addWidget(_alimentPsn, 3, 1, 1, 1);
+  result->addWidget(_alimentSlp, 3, 2, 1, 1);
+  result->addWidget(_alimentBrn, 3, 3, 1, 1);
+  result->addWidget(_alimentFrz, 4, 1, 1, 1);
+  result->addWidget(_alimentPrl, 4, 2, 1, 1);
+  result->addWidget(_species, 0, 4, 5, 1);
 
-  layout->addWidget(new QLabel("Value", this),   8, 1, 1, 3);
-  layout->addWidget(new QLabel("EV", this),      8, 4, 1, 1);
-  layout->addWidget(new QLabel("IV", this),      8, 5, 1, 1);
-  layout->addWidget(new QLabel("HP:", this),     9, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(new QLabel("ATT:", this),   10, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(new QLabel("DEF:", this),   11, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(new QLabel("SPD:", this),   12, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(new QLabel("SPC:", this),   13, 0, 1, 1, Qt::AlignRight);
-  layout->addWidget(_hp,     9, 1, 1, 1);
-  layout->addWidget(new QLabel("/", this), 9, 2, 1, 1);
-  layout->addWidget(_maxhp,  9, 3, 1, 1);
-  layout->addWidget(_att,   10, 1, 1, 3);
-  layout->addWidget(_def,   11, 1, 1, 3);
-  layout->addWidget(_spd,   12, 1, 1, 3);
-  layout->addWidget(_spc,   13, 1, 1, 3);
-  layout->addWidget(_hpev,   9, 4, 1, 1);
-  layout->addWidget(_attev, 10, 4, 1, 1);
-  layout->addWidget(_defev, 11, 4, 1, 1);
-  layout->addWidget(_spdev, 12, 4, 1, 1);
-  layout->addWidget(_spcev, 13, 4, 1, 1);
-  layout->addWidget(_ivhp,   9, 5, 1, 1);
-  layout->addWidget(_ivatt, 10, 5, 1, 1);
-  layout->addWidget(_ivdef, 11, 5, 1, 1);
-  layout->addWidget(_ivspd, 12, 5, 1, 1);
-  layout->addWidget(_ivspc, 13, 5, 1, 1);
+  result->setColumnStretch(0, 1);
+  result->setColumnStretch(1, 1);
+  result->setColumnStretch(2, 1);
+  result->setColumnStretch(3, 2);
+  result->setColumnStretch(4, 2);
 
-  QHBoxLayout *layoutH = new QHBoxLayout();
-  layoutH->addWidget(_alimentPsn);
-  layoutH->addWidget(_alimentSlp);
-  layoutH->addWidget(_alimentBrn);
-  layoutH->addWidget(_alimentFrz);
-  layoutH->addWidget(_alimentPrl);
+  return result;
 
-  layout->addLayout(layoutH, 14, 0, 1, 6);
 }
 
-void PkmnInfoView::organizeLayout(QVBoxLayout *layout) {
-  layout->addWidget(_species);
-  layout->addWidget(_speciesName);
-  layout->addWidget(_type1);
-  layout->addWidget(_type2);
-  layout->addWidget(_pkmnName);
-  layout->addWidget(_pkmnTrainer);
-  layout->addWidget(_pkmnLevel);
-  layout->addWidget(_pkmnExp);
+QLayout *PkmnInfoView::organizeLayoutStatistics() {
 
-  layout->addWidget(_hpev);
-  layout->addWidget(_attev);
-  layout->addWidget(_defev);
-  layout->addWidget(_spdev);
-  layout->addWidget(_spcev);
-  layout->addWidget(_ivhp);
-  layout->addWidget(_ivatt);
-  layout->addWidget(_ivdef);
-  layout->addWidget(_ivspd);
-  layout->addWidget(_ivspc);
-  layout->addWidget(_hp);
-  layout->addWidget(_maxhp);
-  layout->addWidget(_att);
-  layout->addWidget(_def);
-  layout->addWidget(_spd);
-  layout->addWidget(_spc);
-  layout->addWidget(_move1pp);
-  layout->addWidget(_move2pp);
-  layout->addWidget(_move3pp);
-  layout->addWidget(_move4pp);
-  layout->addWidget(_move1ppup);
-  layout->addWidget(_move2ppup);
-  layout->addWidget(_move3ppup);
-  layout->addWidget(_move4ppup);
-  layout->addWidget(_alimentPsn);
-  layout->addWidget(_alimentSlp);
-  layout->addWidget(_alimentBrn);
-  layout->addWidget(_alimentFrz);
-  layout->addWidget(_alimentPrl);
-  layout->addWidget(_move1);
-  layout->addWidget(_move2);
-  layout->addWidget(_move3);
-  layout->addWidget(_move4);
+  QGridLayout *result = new QGridLayout();
+
+  result->addWidget(new QLabel("Value", this),   0, 2, 1, 3, Qt::AlignHCenter);
+  result->addWidget(new QLabel("EV", this),      0, 5, 1, 1, Qt::AlignHCenter);
+  result->addWidget(new QLabel("IV", this),      0, 6, 1, 1, Qt::AlignHCenter);
+  result->addWidget(new QLabel("HP:", this),     1, 1, 1, 1, Qt::AlignRight);
+  result->addWidget(new QLabel("ATT:", this),    2, 1, 1, 1, Qt::AlignRight);
+  result->addWidget(new QLabel("DEF:", this),    3, 1, 1, 1, Qt::AlignRight);
+  result->addWidget(new QLabel("SPD:", this),    4, 1, 1, 1, Qt::AlignRight);
+  result->addWidget(new QLabel("SPC:", this),    5, 1, 1, 1, Qt::AlignRight);
+  result->addWidget(_hp,     1, 2, 1, 1);
+  result->addWidget(new QLabel("/", this), 1, 3, 1, 1);
+  result->addWidget(_maxhp,  1, 4, 1, 1);
+  result->addWidget(_att,    2, 2, 1, 3);
+  result->addWidget(_def,    3, 2, 1, 3);
+  result->addWidget(_spd,    4, 2, 1, 3);
+  result->addWidget(_spc,    5, 2, 1, 3);
+  result->addWidget(_hpev,   1, 5, 1, 1);
+  result->addWidget(_attev,  2, 5, 1, 1);
+  result->addWidget(_defev,  3, 5, 1, 1);
+  result->addWidget(_spdev,  4, 5, 1, 1);
+  result->addWidget(_spcev,  5, 5, 1, 1);
+  result->addWidget(_ivhp,   1, 6, 1, 1);
+  result->addWidget(_ivatt,  2, 6, 1, 1);
+  result->addWidget(_ivdef,  3, 6, 1, 1);
+  result->addWidget(_ivspd,  4, 6, 1, 1);
+  result->addWidget(_ivspc,  5, 6, 1, 1);
+
+  result->setColumnStretch(0, 0);
+  result->setColumnStretch(1, 1);
+  result->setColumnStretch(2, 2);
+  result->setColumnStretch(3, 0);
+  result->setColumnStretch(4, 2);
+  result->setColumnStretch(5, 3);
+  result->setColumnStretch(6, 1);
+
+  return result;
+
+}
+
+QLayout *PkmnInfoView::organizeLayoutMoves() {
+
+  QGridLayout *result = new QGridLayout();
+
+  result->addWidget(new QLabel("Move", this), 0, 1, 1, 1, Qt::AlignHCenter);
+  result->addWidget(new QLabel("PP", this),   0, 2, 1, 1, Qt::AlignHCenter);
+  result->addWidget(new QLabel("PPUP", this), 0, 3, 1, 1, Qt::AlignHCenter);
+  result->addWidget(_move1,     1, 1, 1, 1);
+  result->addWidget(_move2,     2, 1, 1, 1);
+  result->addWidget(_move3,     3, 1, 1, 1);
+  result->addWidget(_move4,     4, 1, 1, 1);
+  result->addWidget(_move1pp,   1, 2, 1, 1);
+  result->addWidget(_move2pp,   2, 2, 1, 1);
+  result->addWidget(_move3pp,   3, 2, 1, 1);
+  result->addWidget(_move4pp,   4, 2, 1, 1);
+  result->addWidget(_move1ppup, 1, 3, 1, 1);
+  result->addWidget(_move2ppup, 2, 3, 1, 1);
+  result->addWidget(_move3ppup, 3, 3, 1, 1);
+  result->addWidget(_move4ppup, 4, 3, 1, 1);
+
+  result->setColumnStretch(0, 1);
+  result->setColumnStretch(1, 6);
+  result->setColumnStretch(2, 1);
+  result->setColumnStretch(3, 1);
+
+  return result;
+
 }
 
 void PkmnInfoView::updateInfo(const PkmnState *info) {
