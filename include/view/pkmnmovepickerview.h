@@ -3,7 +3,11 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include <QVBoxLayout>
+#include <QRadioButton>
+#include <QGridLayout>
+
+#include "pkmnelementpickerview.h"
+#include "pkmnlistitemview.h"
 
 class PkmnMovePickerView : public QWidget {
 
@@ -13,26 +17,27 @@ public:
 
   explicit PkmnMovePickerView(QWidget *parent = 0);
 
-  void setChangingMove (int);
-
 signals:
 
-  void moveSelected(int, int);
-
-public slots:
-
-  void foo ();
+  void moveSelected(int);
 
 private slots:
 
   void manageButtonClicked(int);
+  void manageFilter(int);
+  void manageSort(int);
 
 private:
 
-  int _whichMove;
+  PkmnElementPickerView *_elementPicker;
+  QRadioButton *_order[2];
 
-  QPushButton *_moveList[166];
-  QVBoxLayout *_layout;
+  int _element;
+  int _sorting;
+  void manageSortOrFilter();
+
+  PkmnMoveListItem *_moveList[166];
+  QGridLayout *_layout;
 
 };
 

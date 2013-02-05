@@ -34,13 +34,14 @@ HEADERS += include/controller/pkmnpartycontroller.h \
            include/model/pkmnstringreader.h \
            include/model/pkmntype.h \
            include/view/pkmnmovepickerview.h \
-           include/view/pkmnpartylistitemview.h \
            include/view/pkmnpartylistview.h \
            include/view/pkmnpartyview.h \
            include/view/pkmnsavestateview.h \
            include/view/pkmnspeciespickerview.h \
     include/view/pkmnwidget.h \
-    include/view/pkmninfoview.h
+    include/view/pkmninfoview.h \
+    include/view/pkmnelementpickerview.h \
+    include/view/pkmnlistitemview.h
 SOURCES += src/main.cpp \
            src/controller/pkmnpartycontroller.cpp \
            src/controller/pkmnsavestatecontroller.cpp \
@@ -51,11 +52,12 @@ SOURCES += src/main.cpp \
            src/model/pkmnstate.cpp \
            src/model/pkmnstringreader.cpp \
            src/view/pkmnmovepickerview.cpp \
-           src/view/pkmnpartylistitemview.cpp \
            src/view/pkmnpartylistview.cpp \
            src/view/pkmnpartyview.cpp \
            src/view/pkmnsavestateview.cpp \
            src/view/pkmnspeciespickerview.cpp \
     src/view/pkmnwidget.cpp \
-    src/view/pkmninfoview.cpp
+    src/view/pkmninfoview.cpp \
+    src/view/pkmnelementpickerview.cpp \
+    src/view/pkmnlistitemview.cpp
 RESOURCES += pkmnhacking.qrc

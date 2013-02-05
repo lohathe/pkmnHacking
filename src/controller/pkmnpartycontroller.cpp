@@ -26,6 +26,8 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
           this,  SLOT(managePkmnParameterChanged(int,int)));
   connect(_view, SIGNAL(pkmnMoveChangeEvent(int)),
           this,  SLOT(manageMoveChange(int)));
+  connect(_view, SIGNAL(pkmnMoveSelectedEvent(int)),
+          this,  SLOT(managePkmnMoveSelected(int)));
 
   connect(_view, SIGNAL(saveToFileEvent()), this, SLOT(manageSaveToFile()));
 
@@ -150,13 +152,14 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
       return;
     } else {
       _selectedPartyIndex = _model -> getPartyPkmnCount();
-      emit operationOutcomeEvent(false,
+      emit operationOutcomeEvent(true,
                                  "Successfully created specified pokemon in party");
     }
   } else {
     managePkmnParameterChanged(SPECIES, selectedSpecies);
   }
 
+  _isChangingMove = false;
   _view -> setSelectedPartyPkmn(_selectedPartyIndex);
   _view -> displayPkmnInfo();
 
@@ -171,6 +174,8 @@ void PkmnPartyController::managePkmnMoveSelected(int selectedMove) {
     return;
   }
 
+  _isChangingMove = false;
+  _isCreatingPkmn = false;
   _model -> setPartyPkmnParameter(_selectedPartyIndex, _selectedMoveIndex, selectedMove);
 
   _view -> displayPkmnInfo();

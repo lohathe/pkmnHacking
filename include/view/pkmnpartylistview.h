@@ -6,7 +6,7 @@
 #include <vector>
 using std::vector;
 
-#include "pkmnpartylistitemview.h"
+#include "pkmnlistitemview.h"
 #include "pkmnspecies.h"
 
 class PkmnPartyListView : public QWidget {
@@ -29,7 +29,7 @@ signals:
 
 private:
 
-  PkmnPartyListItem *_activePkmnList[6];
+  PkmnSpeciesListItem *_activePkmnList[6];
 
 };
 

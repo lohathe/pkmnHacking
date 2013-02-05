@@ -55,7 +55,7 @@ vector<const PkmnSpecies *> PkmnSaveState::getPartyPkmnList() const {
 
   for (int i=0; i<6; ++i) {
     const PkmnSpecies *activePkmn =
-      PkmnSpeciesList::get(_data[PkmnSaveState::PARTY_PKMN_SPECIES_OFFSET + i]);
+      PkmnSpeciesList::get(_data[PkmnSaveState::PARTY_PKMN_SPECIES_OFFSET + i] & 0xFF);
     result.push_back(activePkmn);
   }
 
@@ -249,7 +249,7 @@ byte PkmnSaveState::checksum () const {
 
   byte t = 0x00;
   for (int i= 0x2598; i<0x3523; i++) {
-    t = static_cast<byte>(t + _data[i]);
+    t = static_cast<byte>(t + (_data[i] & 0xFF));
   }
   
   return static_cast<byte>(t ^ 0xFF);
@@ -259,12 +259,14 @@ byte PkmnSaveState::checksum () const {
 //  index in [1 .. 6]
 bool PkmnSaveState::pkmnExistsAtPartyIndex (int index) const {
 
-  if (index < 1 || index > 6) 
+  if (index < 1 || index > 6) {
     return false;
+  }
 
-  if (_data[PkmnSaveState::PARTY_PKMN_SPECIES_OFFSET + index - 1] == 0xFF )
+  if ((_data[PkmnSaveState::PARTY_PKMN_SPECIES_OFFSET + index - 1] & 0xFF) == 0xFF) {
 //      || _data[PkmnSaveState::BELT_PKMN_SPCS_OFFSET + index - 1] == 0x00 )
     return false;
+  }
   return true;
 
 }

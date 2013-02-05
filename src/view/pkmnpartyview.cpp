@@ -41,6 +41,8 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
           this,           SIGNAL(pkmnSpeciesSelectedEvent(int)));
 
   _movePicker = new PkmnMovePickerView(this);
+  connect(_movePicker, SIGNAL(moveSelected(int)),
+          this,        SIGNAL(pkmnMoveSelectedEvent(int)));
 
   QVBoxLayout *leftPanel = new QVBoxLayout();
   leftPanel -> addWidget(_partyList);
@@ -62,8 +64,11 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   layout -> addWidget(new QLabel("POKEMON PARTY", this), 0, Qt::AlignVCenter);
   layout -> addLayout(hlayout);
 
-  displaySpeciesPicker();
   setLayout(layout);
+
+  // initial display
+  //displaySpeciesPicker();
+  displayPkmnInfo();
 
 }
 

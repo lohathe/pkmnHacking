@@ -33,6 +33,13 @@ const PkmnMove *PkmnMoveList::get (const string &name) {
   return &_movesList[0];
 }
 
+vector<const PkmnMove *> PkmnMoveList::getWholeList() {
+  vector<const PkmnMove *> result(165);
+  for (int i=1; i<166; ++i)
+      result[i-1] = (&_movesList[i]);
+  return result;
+}
+
 vector<const PkmnMove *> PkmnMoveList::getByElement(byte element) {
   vector<const PkmnMove *> result;
   for (int i=1; i<166; ++i) {

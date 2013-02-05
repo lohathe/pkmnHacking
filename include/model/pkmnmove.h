@@ -39,6 +39,7 @@ public:
   
   static const PkmnMove * get (int);
   static const PkmnMove * get (const string &);
+  static vector<const PkmnMove *> getWholeList();
   static vector<const PkmnMove *> getByElement(byte);
   static vector<const PkmnMove *> getByType(byte);
 

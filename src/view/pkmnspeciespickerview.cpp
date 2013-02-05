@@ -1,6 +1,6 @@
 #include "pkmnspeciespickerview.h"
 #include "pkmnspecies.h"
-#include "pkmnelement.h"
+#include "pkmnelementpickerview.h"
 
 #include <QPushButton>
 #include <QToolButton>
@@ -11,18 +11,6 @@
 #include <QObject>
 
 #include <vector>
-
-PkmnElementSelectorAction::PkmnElementSelectorAction (QObject *parent, int value)
-  : QAction(parent), _elementValue(value) {
-  if (value == 0xFF)
-    setText("All elements");
-  else
-    setText (QString::fromStdString(Element::toString(value)));
-  QObject::connect(this, SIGNAL(triggered()), this, SLOT(manageTriggered()));
-}
-void PkmnElementSelectorAction::manageTriggered() {
-  emit elementActionTriggered(_elementValue);
-}
 
 PkmnSpeciesPickerView::PkmnSpeciesPickerView (QWidget *parent) : QWidget(parent) {
 
@@ -59,7 +47,9 @@ PkmnSpeciesPickerView::PkmnSpeciesPickerView (QWidget *parent) : QWidget(parent)
                    this, SIGNAL(speciesSelected(int)));
 
   QPushButton *elementSelect = new QPushButton("Select pokemon element");
-  QMenu *elementMenu = createElementMenu();
+  PkmnElementPickerView *elementMenu = new PkmnElementPickerView(this);
+  connect (elementMenu, SIGNAL(elementSelected(int)),
+           this,        SLOT(selectByElement(int)));
   elementSelect->setMenu(elementMenu);
 
   QVBoxLayout *vlayout = new QVBoxLayout(this);
@@ -68,35 +58,6 @@ PkmnSpeciesPickerView::PkmnSpeciesPickerView (QWidget *parent) : QWidget(parent)
   //vlayout -> addStretch(1);
 
   setLayout(vlayout);
-}
-
-QMenu *PkmnSpeciesPickerView::createElementMenu() {
-
-  QMenu *result = new QMenu("Select pokemon element", this);
-  PkmnElementSelectorAction *elements[16];
-  elements[0]  = new PkmnElementSelectorAction(result, 0xFF);
-  elements[1]  = new PkmnElementSelectorAction(result, Element::NORMAL);
-  elements[2]  = new PkmnElementSelectorAction(result, Element::FIGHTING);
-  elements[3]  = new PkmnElementSelectorAction(result, Element::FLYING);
-  elements[4]  = new PkmnElementSelectorAction(result, Element::POISON);
-  elements[5]  = new PkmnElementSelectorAction(result, Element::GROUND);
-  elements[6]  = new PkmnElementSelectorAction(result, Element::ROCK);
-  elements[7]  = new PkmnElementSelectorAction(result, Element::BUG);
-  elements[8]  = new PkmnElementSelectorAction(result, Element::GHOST);
-  elements[9]  = new PkmnElementSelectorAction(result, Element::FIRE);
-  elements[10] = new PkmnElementSelectorAction(result, Element::WATER);
-  elements[11] = new PkmnElementSelectorAction(result, Element::GRASS);
-  elements[12] = new PkmnElementSelectorAction(result, Element::ELECTRIC);
-  elements[13] = new PkmnElementSelectorAction(result, Element::PSYCHIC);
-  elements[14] = new PkmnElementSelectorAction(result, Element::ICE);
-  elements[15] = new PkmnElementSelectorAction(result, Element::DRAGON);
-
-  for (int i=0; i<16; ++i) {
-    result -> addAction (elements[i]);
-    QObject::connect(elements[i], SIGNAL(elementActionTriggered(int)),
-                     this, SLOT(selectByElement(int)));
-  }
-  return result;
 }
 
 void PkmnSpeciesPickerView::selectByElement (int element) {

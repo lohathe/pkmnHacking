@@ -36,8 +36,9 @@ signals:
   void deletePkmnEvent();
 
   void pkmnSpeciesChangeEvent();
-  void pkmnMoveChangeEvent(int);
   void pkmnSpeciesSelectedEvent(int);
+  void pkmnMoveChangeEvent(int);
+  void pkmnMoveSelectedEvent(int);
   void pkmnNameChangedEvent(const string &);
   void pkmnParameterChangedEvent(int, int);
 
