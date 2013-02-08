@@ -164,7 +164,7 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   layout -> addLayout(organizeLayoutGeneralInfo());
   layout -> addLayout(organizeLayoutStatistics());
   layout -> addLayout(organizeLayoutMoves());
-  layout -> addStretch(1);
+  //layout -> addStretch(1);
 
   updateInfo(NULL);
   setLayout(layout);

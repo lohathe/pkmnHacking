@@ -19,8 +19,6 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   connect(create, SIGNAL(clicked()), this, SIGNAL(createPkmnEvent()));
   QPushButton *remove = new QPushButton("DELETE", this);
   connect(remove, SIGNAL(clicked()), this, SIGNAL(deletePkmnEvent()));
-  QPushButton *save = new QPushButton("SAVE", this);
-  connect(save, SIGNAL(clicked()), this, SIGNAL(saveToFileEvent()));
 
   _partyList = new PkmnPartyListView(this);
   connect(_partyList, SIGNAL(selectPkmnEvent(int)),
@@ -46,10 +44,9 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
 
   QVBoxLayout *leftPanel = new QVBoxLayout();
   leftPanel -> addWidget(_partyList);
-  leftPanel -> addStretch(1);
+  leftPanel -> addStretch(3);
   leftPanel -> addWidget(create);
   leftPanel -> addWidget(remove);
-  leftPanel -> addWidget(save);
 
   QVBoxLayout *rightPanel = new QVBoxLayout();
   rightPanel -> addWidget(_pkmnInfo);
@@ -60,14 +57,15 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   hlayout -> addLayout(leftPanel, 0);
   hlayout -> addLayout(rightPanel, 1);
 
+  QLabel *title = new QLabel("POKEMON PARY", this);
+  title -> setStyleSheet("background:#000;color:#FFF;font-weight:bold;padding:3px 300px 3px 300px;");
   QVBoxLayout *layout = new QVBoxLayout();
-  layout -> addWidget(new QLabel("POKEMON PARTY", this), 0, Qt::AlignVCenter);
+  layout -> addWidget(title, 1, Qt::AlignHCenter);
   layout -> addLayout(hlayout);
 
   setLayout(layout);
 
   // initial display
-  //displaySpeciesPicker();
   displayPkmnInfo();
 
 }

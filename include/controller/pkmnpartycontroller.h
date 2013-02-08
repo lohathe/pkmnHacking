@@ -37,11 +37,7 @@ public slots:
   void managePkmnNameChanged(const string &);
   void managePkmnParameterChanged(int, int);
 
-  void manageSaveToFile();
-
 private slots:
-
-  void manageOperationOutcome(bool, const string &);
 
 private:
 

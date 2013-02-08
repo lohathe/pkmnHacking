@@ -29,12 +29,6 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
   connect(_view, SIGNAL(pkmnMoveSelectedEvent(int)),
           this,  SLOT(managePkmnMoveSelected(int)));
 
-  connect(_view, SIGNAL(saveToFileEvent()), this, SLOT(manageSaveToFile()));
-
-  // Detect something went wrong
-  connect(this, SIGNAL(operationOutcomeEvent(bool, string)),
-          this, SLOT(manageOperationOutcome(bool, string)));
-
   // ACTIVATE VIEW
   _view -> connectModel(model);
   _view -> manageChangedPkmnPartyList();
@@ -193,21 +187,6 @@ void PkmnPartyController::managePkmnNameChanged(const string &newName) {
 
 }
 
-void PkmnPartyController::manageSaveToFile() {
-
-  bool outcome;
-  // PERFORMS INTEGRITY CHECK
-  outcome = _model -> saveToFile();
-
-  if (outcome)
-    emit operationOutcomeEvent(true,
-                               "Changes written to file.");
-  else
-    emit operationOutcomeEvent(false,
-                               "Some error while saving changes to file.");
-
-}
-
 void PkmnPartyController::managePkmnParameterChanged(int parameter, int newValue) {
 
   if (parameter & IV)
@@ -298,7 +277,7 @@ void PkmnPartyController::manageLvlParameter(int parameter, int newValue) {
 
 }
 
-void PkmnPartyController::manageSpeciesParameter(int parameter, int newValue) {
+void PkmnPartyController::manageSpeciesParameter(int, int newValue) {
 
   const PkmnSpecies *pkmn = PkmnSpeciesList::get(newValue);
   if (!(pkmn -> isValid())) {
@@ -314,10 +293,10 @@ void PkmnPartyController::manageSpeciesParameter(int parameter, int newValue) {
 
 }
 
-void PkmnPartyController::manageAlimentParameter(int parameter, int newValue) {
+void PkmnPartyController::manageAlimentParameter(int, int newValue) {
 
-  if (newValue & (Aliment::ASLEEP | Aliment::BURNED | Aliment::FROZEN |
-                  Aliment::PARALYZED | Aliment::POISONED)) {
+  if (!(newValue & (Aliment::ASLEEP | Aliment::BURNED | Aliment::FROZEN |
+                  Aliment::PARALYZED | Aliment::POISONED))) {
     emit operationOutcomeEvent(false,
                                "Invalid pokemon aliment.");
     return;
@@ -341,5 +320,3 @@ void PkmnPartyController::managePPParameter(int parameter, int newValue) {
   _model -> setPartyPkmnParameter(_selectedPartyIndex, parameter, value);
 
 }
-
-void PkmnPartyController::manageOperationOutcome(bool b, const string &s) {}

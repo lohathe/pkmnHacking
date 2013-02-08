@@ -42,8 +42,6 @@ signals:
   void pkmnNameChangedEvent(const string &);
   void pkmnParameterChangedEvent(int, int);
 
-  void saveToFileEvent();
-
 public slots:
 
   void manageChangedPkmnPartyList();
