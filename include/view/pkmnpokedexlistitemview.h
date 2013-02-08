@@ -2,7 +2,6 @@
 #define PKMN_POKEDEX_LIST_ITEM_VIEW
 
 #include <QWidget>
-#include <QCheckBox>
 
 #include "pkmnspecies.h"
 
@@ -14,30 +13,30 @@ public:
 
   PkmnPokedexListItemView(int, QWidget *);
 
-  void updateItem(int);
+  void updateItem(bool, bool);
 
 signals:
 
-  void pkmnPokedexStatusChangedEvent(int, int);
+  void clickedEvent(int);
 
 public slots:
+
+protected:
 
   virtual void paintEvent (QPaintEvent *);
   virtual void enterEvent (QEvent *);
   virtual void leaveEvent (QEvent *);
+  virtual void mousePressEvent(QMouseEvent *);
 
 private slots:
-
-  void manageButtonClicked();
 
 private:
 
   const PkmnSpecies *_pkmnInfo;
-  int _pkmnPokedexStatus;
+  bool _isSeen;
+  bool _isCatched;
 
   bool _isMouseOver;
-  QCheckBox *_pkmnSeen;
-  QCheckBox *_pkmnCatched;
 
 };
 

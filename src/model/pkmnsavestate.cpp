@@ -270,3 +270,36 @@ bool PkmnSaveState::pkmnExistsAtPartyIndex (int index) const {
   return true;
 
 }
+
+
+// POKEDEX INFO
+
+PkmnPokedex PkmnSaveState::getPkmnPokedex() const {
+  return PkmnPokedex(
+        &_data[PkmnSaveState::PKMN_POKEDEX_SEEN_OFFSET],
+        &_data[PkmnSaveState::PKMN_POKEDEX_CATCH_OFFSET]);
+}
+bool PkmnSaveState::setPkmnPokedexSeen(int pkmnIndex, bool isSeen) {
+
+  pkmnIndex = pkmnIndex - 1;
+  int mask = 0x01<<(pkmnIndex % 8);
+  if (isSeen) {
+    _data[PkmnSaveState::PKMN_POKEDEX_SEEN_OFFSET + pkmnIndex/8] |= mask;
+  } else {
+    _data[PkmnSaveState::PKMN_POKEDEX_SEEN_OFFSET + pkmnIndex/8] &= ~mask;
+  }
+  return true;
+
+}
+bool PkmnSaveState::setPkmnPokedexCatched(int pkmnIndex, bool isCatched) {
+
+  pkmnIndex = pkmnIndex - 1;
+  int mask = 0x01<<(pkmnIndex % 8);
+  if (isCatched) {
+    _data[PkmnSaveState::PKMN_POKEDEX_CATCH_OFFSET + pkmnIndex/8] |= mask;
+  } else {
+    _data[PkmnSaveState::PKMN_POKEDEX_CATCH_OFFSET + pkmnIndex/8] &= ~mask;
+  }
+  return true;
+
+}

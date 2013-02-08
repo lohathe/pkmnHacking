@@ -3,6 +3,7 @@
 
 #include "pkmndataformat.h"
 #include "pkmnstate.h"
+#include "pkmnpokedex.h"
 #include "pkmnspecies.h"
 
 #include <string>
@@ -17,6 +18,8 @@ public:
   PkmnSaveState (string, bool backup = false);
 
   // GENERAL INFO
+  bool saveToFile() const;
+
   int getTrainerId() const;
 
   // PARTY PKMN INFO
@@ -32,8 +35,10 @@ public:
   bool createPartyPkmnAtIndex(int, int);
   bool deletePartyPkmnAtIndex(int);
   
-  bool saveToFile() const;
-
+  // POKEDEX PKMN INFO
+  PkmnPokedex getPkmnPokedex() const;
+  bool setPkmnPokedexSeen(int, bool);
+  bool setPkmnPokedexCatched(int, bool);
 
 private:
 
@@ -41,6 +46,8 @@ private:
   byte *_data;
   int _dataLength;
 
+  static const int PKMN_POKEDEX_CATCH_OFFSET = 0x25A3;
+  static const int PKMN_POKEDEX_SEEN_OFFSET  = 0x25B6;
   static const int TRAINER_OFFSET            = 0x2605;
   static const int PARTY_PKMN_COUNT_OFFSET   = 0x2F2C;
   static const int PARTY_PKMN_SPECIES_OFFSET = 0x2F2D;

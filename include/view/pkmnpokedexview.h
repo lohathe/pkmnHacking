@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "pkmnpokedexlistitemview.h"
+
 class PkmnSaveStateModel;
 
 class PkmnPokedexView : public QWidget {
@@ -16,13 +18,16 @@ public:
 
 signals:
 
-  void pkmnPokedexEntryChanged(int, int);
+  void pkmnPokedexEntryClicked(int);
 
 public slots:
+
+  void updateList();
 
 private:
 
   PkmnSaveStateModel *_model;
+  PkmnPokedexListItemView *_pkmnList[151];
 
 };
 

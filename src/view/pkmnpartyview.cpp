@@ -79,8 +79,11 @@ void PkmnPartyView::displayPkmnInfo() {
 
   if (_selectedPartyPkmn == 0)
     _pkmnInfo -> updateInfo (NULL);
-  else
-    _pkmnInfo -> updateInfo (_model -> getPartyPkmnInfo(_selectedPartyPkmn));
+  else {
+    PkmnState *pkmnInfo = _model -> getPartyPkmnInfo(_selectedPartyPkmn);
+    _pkmnInfo -> updateInfo (pkmnInfo);
+    delete pkmnInfo;
+  }
 
   _speciesPicker -> setVisible(false);
   _movePicker -> setVisible(false);
@@ -119,7 +122,11 @@ void PkmnPartyView::manageChangedPkmnPartyList() {
 void PkmnPartyView::manageChangedPkmnPartyInfo() {
 
   _disableUpdate = true;
-  _pkmnInfo -> updateInfo(_model -> getPartyPkmnInfo(_selectedPartyPkmn));
+
+  PkmnState *pkmnInfo = _model -> getPartyPkmnInfo(_selectedPartyPkmn);
+  _pkmnInfo -> updateInfo(pkmnInfo);
+  delete pkmnInfo;
+
   _disableUpdate = false;
 
 }

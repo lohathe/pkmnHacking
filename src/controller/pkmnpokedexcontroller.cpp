@@ -1,8 +1,12 @@
 #include "pkmnpokedexcontroller.h"
 
 #include "pkmnsavestatemodel.h"
+#include "pkmnspecies.h"
 
 #include "pkmnpokedexview.h"
+
+#include <string>
+using std::string;
 
 PkmnPokedexController::PkmnPokedexController(PkmnSaveStateModel *model,
                                              PkmnPokedexView *view) :
@@ -10,11 +14,30 @@ PkmnPokedexController::PkmnPokedexController(PkmnSaveStateModel *model,
 
   _view -> connectModel(model);
 
+  connect(_view, SIGNAL(pkmnPokedexEntryClicked(int)),
+          this, SLOT(managePkmnPokedexEntryClicked(int)));
+
 }
 
-void PkmnPokedexController::managePkmnPokedexEntryChanged(int pkmnIndex, int status) {
+void PkmnPokedexController::managePkmnPokedexEntryClicked(int pkmnIndex) {
 
-  pkmnIndex = 0;
-  status = 0;
+  bool isSeen = (_model -> getPkmnPokedex()).isPkmnSeen(pkmnIndex);
+  bool isCatched = (_model -> getPkmnPokedex()).isPkmnCatched(pkmnIndex);
+  string pkmn = PkmnSpeciesList::getBy(PkmnSpeciesList::INDEX, pkmnIndex)[0]->getName();
+
+  if (isCatched) {
+    _model -> setPkmnPokedexSeen(pkmnIndex, false);
+    _model -> setPkmnPokedexCatched(pkmnIndex, false);
+
+    emit operationOutcomeEvent(true, pkmn +" is now unknown.");
+  } else if (isSeen) {
+    _model -> setPkmnPokedexCatched(pkmnIndex, true);
+
+    emit operationOutcomeEvent(true, pkmn +" is now catched.");
+  } else {
+    _model -> setPkmnPokedexSeen(pkmnIndex, true);
+
+    emit operationOutcomeEvent(true, pkmn +" is now seen.");
+  }
 
 }

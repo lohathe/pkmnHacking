@@ -6,47 +6,22 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 
-/*
- INSERT MODEL TO CHECK ENUM!!!!
- 0x01 == PKMN SEEN
- 0x02 == PKMN CATCHED
-*/
-int PKMN_SEEN    = 0x01;
-int PKMN_CATCHED = 0x02;
-
 PkmnPokedexListItemView::PkmnPokedexListItemView(int pkmnIndex, QWidget *parent) :
   QWidget(parent),
   _pkmnInfo(PkmnSpeciesList::getBy(PkmnSpeciesList::INDEX, pkmnIndex)[0]),
-  _pkmnPokedexStatus(3), _isMouseOver(false) {
+  _isSeen(false), _isCatched(false), _isMouseOver(false) {
 
   setFixedSize(300, 60);
 
-  _pkmnSeen = new QCheckBox(this);
-  //_pkmnSeen -> setLayoutDirection(Qt::RightToLeft);
-  _pkmnCatched = new QCheckBox(this);
-  //_pkmnCatched -> setLayoutDirection(Qt::RightToLeft);
-  QFormLayout *form = new QFormLayout();
-  form -> setLabelAlignment(Qt::AlignRight);
-  form -> addRow("seen", _pkmnSeen);
-  form -> addRow("catched", _pkmnCatched);
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout -> addStretch(1);
-  layout -> addLayout(form);
-  setLayout(layout);
-
-  connect (_pkmnSeen, SIGNAL(clicked()), this, SLOT(manageButtonClicked()));
-  connect (_pkmnCatched, SIGNAL(clicked()), this, SLOT(manageButtonClicked()));
-
 }
 
-void PkmnPokedexListItemView::updateItem(int pokedexStatus) {
+void PkmnPokedexListItemView::updateItem(bool isSeen, bool isCatched) {
 
-  if (pokedexStatus == _pkmnPokedexStatus)
+  if (isSeen == _isSeen && isCatched == _isCatched)
     return;
 
-  _pkmnPokedexStatus = pokedexStatus;
-  _pkmnSeen    -> setChecked(_pkmnPokedexStatus & PKMN_SEEN);
-  _pkmnCatched -> setChecked(_pkmnPokedexStatus & PKMN_CATCHED);
+  _isSeen = isSeen;
+  _isCatched = isCatched;
 
   update();
 
@@ -59,11 +34,11 @@ void PkmnPokedexListItemView::paintEvent(QPaintEvent *e) {
   if (_isMouseOver) {
     p.fillRect(0, 10, 300, 40, QColor(255, 255,200));
   }
-  if (_pkmnInfo->getIndex()%2 == 1) {
+  if (_pkmnInfo->getIndex()%2 == 1 && !_isMouseOver) {
     p.fillRect(0, 10, 300, 40, QColor(200, 200, 160));
   }
 
-  if (_pkmnPokedexStatus & PKMN_SEEN) {
+  if (_isSeen) {
     p.drawPixmap (10, 2,
                   QPixmap(":/img/spritesyellowcolor.png")
                     .copy(1+57*((_pkmnInfo->getIndex()-1)%12),
@@ -77,7 +52,7 @@ void PkmnPokedexListItemView::paintEvent(QPaintEvent *e) {
                          56, 56));
   }
 
-  if (_pkmnPokedexStatus & PKMN_CATCHED) {
+  if (_isCatched) {
     p.drawPixmap (5, 28, QPixmap(":/img/pokeballSprite.png").scaled(30,30));
   }
   p.drawText(80, 38, QString::fromStdString(_pkmnInfo->getName()));
@@ -100,6 +75,12 @@ void PkmnPokedexListItemView::leaveEvent(QEvent *) {
   update();
 }
 
+void PkmnPokedexListItemView::mousePressEvent(QMouseEvent *) {
+
+  emit clickedEvent(_pkmnInfo->getIndex());
+}
+
+/*
 void PkmnPokedexListItemView::manageButtonClicked() {
 
   int pokedexStatus = 0;
@@ -108,6 +89,6 @@ void PkmnPokedexListItemView::manageButtonClicked() {
   if (_pkmnCatched -> isChecked())
     pokedexStatus = pokedexStatus | PKMN_CATCHED;
 
-  emit pkmnPokedexStatusChangedEvent(_pkmnInfo->getId(), pokedexStatus);
+  emit pkmnPokedexStatusChangedEvent(_pkmnInfo->getIndex(), pokedexStatus);
 
-}
+}*/

@@ -20,8 +20,12 @@ public:
 
   PkmnSaveStateModel (PkmnSaveState*);
 
+  bool saveToFile() const;
+
+  // GENERAL INFO
   int getTrainerId() const;
 
+  // PARTY PKMN INFO
   vector<const PkmnSpecies *> getPartyPkmnList() const;
   int getPartyPkmnCount() const;
 
@@ -34,12 +38,17 @@ public:
   bool createPartyPkmnAtIndex(int, int);
   bool deletePartyPkmnAtIndex(int);
   
-  bool saveToFile() const;
+  // POKEDEX PKMN INFO
+  PkmnPokedex getPkmnPokedex() const;
+  bool setPkmnPokedexSeen(int, bool);
+  bool setPkmnPokedexCatched(int, bool);
 
 signals:
 
   void changedPkmnPartyListEvent();
   void changedPkmnPartyInfoEvent();
+
+  void changedPkmnPokedexEvent();
 
 public slots:
 

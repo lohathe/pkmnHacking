@@ -22,7 +22,7 @@ signals:
   
 public slots:
 
-  void managePkmnPokedexEntryChanged(int, int);
+  void managePkmnPokedexEntryClicked(int);
 
 private:
 

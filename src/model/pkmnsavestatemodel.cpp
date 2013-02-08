@@ -102,10 +102,26 @@ bool PkmnSaveStateModel::saveToFile() const {
 
 }
 
+PkmnPokedex PkmnSaveStateModel::getPkmnPokedex() const {
 
+  return _saveState -> getPkmnPokedex();
 
+}
 
-//signals:
+bool PkmnSaveStateModel::setPkmnPokedexSeen(int pkmnIndex, bool isSeen) {
 
-void changedPkmnPartyListEvent();
-void changedPkmnPartyInfoEvent();
+  bool outcome = _saveState -> setPkmnPokedexSeen(pkmnIndex, isSeen);
+  if (outcome)
+    emit changedPkmnPokedexEvent();
+  return outcome;
+
+}
+
+bool PkmnSaveStateModel::setPkmnPokedexCatched(int pkmnIndex, bool isCatched) {
+
+  bool outcome = _saveState -> setPkmnPokedexCatched(pkmnIndex, isCatched);
+  if (outcome)
+    emit changedPkmnPokedexEvent();
+  return outcome;
+
+}
