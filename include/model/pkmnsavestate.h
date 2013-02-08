@@ -28,7 +28,7 @@ public:
 
   int getPartyPkmnParameter(int, int) const;
   string getPartyPkmnName(int) const;
-  PkmnState* getPartyPkmnState(int) const;
+  PkmnState getPartyPkmnState(int) const;
   bool setPartyPkmnParameter(int, int, int);
   bool setPartyPkmnName(int, string);
 

@@ -101,12 +101,12 @@ string PkmnSaveState::getPartyPkmnName(int partyIndex) const {
 }
 
 // partyIndex in [1 .. 6]
-PkmnState* PkmnSaveState::getPartyPkmnState(int partyIndex) const {
+PkmnState PkmnSaveState::getPartyPkmnState(int partyIndex) const {
 
   if (!pkmnExistsAtPartyIndex(partyIndex))
-    return NULL;
+    return PkmnState(NULL, NULL);
 
-  return new PkmnState(
+  return PkmnState(
     &( _data[PkmnSaveState::PARTY_PKMN_STATE_OFFSET + 44*(partyIndex-1)] ),
     &( _data[PkmnSaveState::PARTY_PKMN_NAMES_OFFSET + 11*(partyIndex-1)] ));
 }

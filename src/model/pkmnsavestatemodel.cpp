@@ -36,7 +36,7 @@ string PkmnSaveStateModel::getPartyPkmnName(int partyIndex) {
 
 }
 
-PkmnState* PkmnSaveStateModel::getPartyPkmnInfo(int partyIndex) const {
+PkmnState PkmnSaveStateModel::getPartyPkmnInfo(int partyIndex) const {
 
   return _saveState -> getPartyPkmnState(partyIndex);
 }

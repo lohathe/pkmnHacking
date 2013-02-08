@@ -31,7 +31,7 @@ public:
 
   int  getPartyPkmnParameter(int, int);
   string getPartyPkmnName(int);
-  PkmnState* getPartyPkmnInfo(int) const;
+  PkmnState getPartyPkmnInfo(int) const;
   bool setPartyPkmnParameter(int, int, int);
   bool setPartyPkmnName(int, string);
   

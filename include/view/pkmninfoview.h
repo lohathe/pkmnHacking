@@ -22,7 +22,7 @@ public:
 
   PkmnInfoView (QWidget *);
 
-  void updateInfo(const PkmnState *);
+  void updateInfo(const PkmnState);
 
 signals:
 

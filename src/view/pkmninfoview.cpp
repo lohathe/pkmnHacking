@@ -166,7 +166,7 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   layout -> addLayout(organizeLayoutMoves());
   //layout -> addStretch(1);
 
-  updateInfo(NULL);
+  updateInfo(PkmnState(NULL, NULL));
   setLayout(layout);
 
 }
@@ -272,9 +272,9 @@ QLayout *PkmnInfoView::organizeLayoutMoves() {
 
 }
 
-void PkmnInfoView::updateInfo(const PkmnState *info) {
+void PkmnInfoView::updateInfo(const PkmnState info) {
 
-  if (info == NULL) {
+  if (!info.isValid()) {
     _pkmnName    -> setText("---");
     _pkmnLevel   -> setValue(1);
     _pkmnExp     -> setValue(1);
@@ -323,44 +323,44 @@ void PkmnInfoView::updateInfo(const PkmnState *info) {
 
     setEnabled(false);
   } else {
-    _pkmnName    -> setText(QString::fromStdString(info->getName()));
-    _pkmnLevel   -> setValue(info->get(LEVEL));
-    _pkmnExp     -> setValue(info->get(EXP));
-    _pkmnTrainer -> setValue(info->get(TRAINER));
-    _hpev        -> setValue(info->get(HPEV));
-    _attev       -> setValue(info->get(ATTEV));
-    _defev       -> setValue(info->get(DEFEV));
-    _spdev       -> setValue(info->get(SPDEV));
-    _spcev       -> setValue(info->get(SPCEV));
-    _ivhp        -> setValue(((info->get(IV)>>9)&0x08)|((info->get(IV)>>6)&0x04)|((info->get(IV)>>3)&0x02)|((info->get(IV)>>0)&0x01));
-    _ivatt       -> setValue((info->get(IV)>>12)& 0x000F);
-    _ivdef       -> setValue((info->get(IV)>>8) & 0x000F);
-    _ivspd       -> setValue((info->get(IV)>>4) & 0x000F);
-    _ivspc       -> setValue((info->get(IV)>>0) & 0x000F);
-    _hp          -> setValue(info->get(HP));
-    _maxhp       -> setValue(info->get(MAXHP));
-    _att         -> setValue(info->get(ATT));
-    _def         -> setValue(info->get(DEF));
-    _spd         -> setValue(info->get(SPD));
-    _spc         -> setValue(info->get(SPC));
-    _move1pp     -> setValue(info->get(MOVE1PP)&0x3F);
-    _move2pp     -> setValue(info->get(MOVE2PP)&0x3F);
-    _move3pp     -> setValue(info->get(MOVE3PP)&0x3F);
-    _move4pp     -> setValue(info->get(MOVE4PP)&0x3F);
-    _move1ppup   -> setValue((info->get(MOVE1PP)&0xC0)>>6);
-    _move2ppup   -> setValue((info->get(MOVE2PP)&0xC0)>>6);
-    _move3ppup   -> setValue((info->get(MOVE3PP)&0xC0)>>6);
-    _move4ppup   -> setValue((info->get(MOVE4PP)&0xC0)>>6);
-    _alimentPsn  -> setChecked(info->get(ALIMENT)&Aliment::POISONED);
-    _alimentSlp  -> setChecked(info->get(ALIMENT)&Aliment::ASLEEP);
-    _alimentBrn  -> setChecked(info->get(ALIMENT)&Aliment::BURNED);
-    _alimentFrz  -> setChecked(info->get(ALIMENT)&Aliment::FROZEN);
-    _alimentPrl  -> setChecked(info->get(ALIMENT)&Aliment::PARALYZED);
-    _move1       -> setText(QString::fromStdString(PkmnMoveList::get(info->get(MOVE1))->getName()));
-    _move2       -> setText(QString::fromStdString(PkmnMoveList::get(info->get(MOVE2))->getName()));
-    _move3       -> setText(QString::fromStdString(PkmnMoveList::get(info->get(MOVE3))->getName()));
-    _move4       -> setText(QString::fromStdString(PkmnMoveList::get(info->get(MOVE4))->getName()));
-    const PkmnSpecies *species = PkmnSpeciesList::get(info->get(SPECIES));
+    _pkmnName    -> setText(QString::fromStdString(info.getName()));
+    _pkmnLevel   -> setValue(info.get(LEVEL));
+    _pkmnExp     -> setValue(info.get(EXP));
+    _pkmnTrainer -> setValue(info.get(TRAINER));
+    _hpev        -> setValue(info.get(HPEV));
+    _attev       -> setValue(info.get(ATTEV));
+    _defev       -> setValue(info.get(DEFEV));
+    _spdev       -> setValue(info.get(SPDEV));
+    _spcev       -> setValue(info.get(SPCEV));
+    _ivhp        -> setValue(((info.get(IV)>>9)&0x08)|((info.get(IV)>>6)&0x04)|((info.get(IV)>>3)&0x02)|((info.get(IV)>>0)&0x01));
+    _ivatt       -> setValue((info.get(IV)>>12)& 0x000F);
+    _ivdef       -> setValue((info.get(IV)>>8) & 0x000F);
+    _ivspd       -> setValue((info.get(IV)>>4) & 0x000F);
+    _ivspc       -> setValue((info.get(IV)>>0) & 0x000F);
+    _hp          -> setValue(info.get(HP));
+    _maxhp       -> setValue(info.get(MAXHP));
+    _att         -> setValue(info.get(ATT));
+    _def         -> setValue(info.get(DEF));
+    _spd         -> setValue(info.get(SPD));
+    _spc         -> setValue(info.get(SPC));
+    _move1pp     -> setValue(info.get(MOVE1PP)&0x3F);
+    _move2pp     -> setValue(info.get(MOVE2PP)&0x3F);
+    _move3pp     -> setValue(info.get(MOVE3PP)&0x3F);
+    _move4pp     -> setValue(info.get(MOVE4PP)&0x3F);
+    _move1ppup   -> setValue((info.get(MOVE1PP)&0xC0)>>6);
+    _move2ppup   -> setValue((info.get(MOVE2PP)&0xC0)>>6);
+    _move3ppup   -> setValue((info.get(MOVE3PP)&0xC0)>>6);
+    _move4ppup   -> setValue((info.get(MOVE4PP)&0xC0)>>6);
+    _alimentPsn  -> setChecked(info.get(ALIMENT)&Aliment::POISONED);
+    _alimentSlp  -> setChecked(info.get(ALIMENT)&Aliment::ASLEEP);
+    _alimentBrn  -> setChecked(info.get(ALIMENT)&Aliment::BURNED);
+    _alimentFrz  -> setChecked(info.get(ALIMENT)&Aliment::FROZEN);
+    _alimentPrl  -> setChecked(info.get(ALIMENT)&Aliment::PARALYZED);
+    _move1       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE1))->getName()));
+    _move2       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE2))->getName()));
+    _move3       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE3))->getName()));
+    _move4       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE4))->getName()));
+    const PkmnSpecies *species = PkmnSpeciesList::get(info.get(SPECIES));
     _species     -> setIcon(QPixmap(":/img/spritesyellowcolor.png")
                             .copy(1+((species->getIndex()-1)%12)*(imgDim+1),
                                   1+((species->getIndex()-1)/12)*(imgDim+1),

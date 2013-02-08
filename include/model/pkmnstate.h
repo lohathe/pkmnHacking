@@ -49,13 +49,15 @@ public:
 
   PkmnState(const byte*, const byte*);
 
+  bool isValid() const;
+
   int get(int) const;
   string getName() const;
 
 private:
 
-  byte _data[44];
-  byte _name[11];
+  const byte *_data;
+  const byte *_name;
 
 };
 

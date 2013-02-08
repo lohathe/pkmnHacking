@@ -1,13 +1,13 @@
 #include "pkmnstate.h"
 #include "pkmnstringreader.h"
 
-PkmnState::PkmnState(const byte *data, const byte *name) {
-  for (int i=0; i<44; i++) {
-      _data[i] = data[i];
-    }
-    for (int i=0; i<11; i++) {
-      _name[i] = name[i];
-    }
+PkmnState::PkmnState(const byte *data, const byte *name)
+  : _data(data), _name(name) {}
+
+bool PkmnState::isValid() const {
+
+  return (_data != NULL) && (_name != NULL);
+
 }
 
 int PkmnState::getMinValue (int info) {
@@ -83,6 +83,7 @@ int PkmnState::getInfoSize (int info) {
 }
 
 int PkmnState::get (int info) const {
+
   int result = 0;
   int startingOffset = PkmnState::getOffset(info);
   for (int i=0; i<PkmnState::getInfoSize(info); i++) {
