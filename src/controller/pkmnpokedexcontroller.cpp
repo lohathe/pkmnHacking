@@ -23,7 +23,7 @@ void PkmnPokedexController::managePkmnPokedexEntryClicked(int pkmnIndex) {
 
   bool isSeen = (_model -> getPkmnPokedex()).isPkmnSeen(pkmnIndex);
   bool isCatched = (_model -> getPkmnPokedex()).isPkmnCatched(pkmnIndex);
-  string pkmn = PkmnSpeciesList::getBy(PkmnSpeciesList::INDEX, pkmnIndex)[0]->getName();
+  string pkmn = PkmnSpeciesList::getByIndex(pkmnIndex)->getName();
 
   if (isCatched) {
     _model -> setPkmnPokedexSeen(pkmnIndex, false);

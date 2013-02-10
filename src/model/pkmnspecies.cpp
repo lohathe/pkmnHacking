@@ -17,19 +17,36 @@ int PkmnSpecies::getId() const { return _id; }
 
 string PkmnSpecies::getName() const { return _name; }
 
+string PkmnSpecies::getUpperCaseName() const {
+  string result = _name;
+  std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+  return result;
+}
+
 byte PkmnSpecies::getElement1() const { return _element1; }
 
 byte PkmnSpecies::getElement2() const { return _element2; }
 
-const PkmnSpecies * PkmnSpeciesList::get(const int index) {
+const PkmnSpecies * PkmnSpeciesList::getById(int id) {
 
-  if (index < 1 || index > 190)
+  if (id < 1 || id > 190)
     return &_pkmnSpeciesList[0x1F]; // the first" missingno."
-  return &_pkmnSpeciesList[index - 1];
+  return &_pkmnSpeciesList[id - 1];
 
 }
 
-const PkmnSpecies* PkmnSpeciesList::get(const string &name) {
+const PkmnSpecies * PkmnSpeciesList::getByIndex(int index) {
+
+  if (index < 1 || index > 151)
+    return &_pkmnSpeciesList[0x1F]; // the first" missingno."
+  for (int i = 0; i<190; ++i) {
+    if (_pkmnSpeciesList[i].getIndex() == index)
+      return &_pkmnSpeciesList[i];
+  }
+  return &_pkmnSpeciesList[0x1F];
+}
+
+const PkmnSpecies* PkmnSpeciesList::getByName(const string &name) {
 
   for (int i=0; i<190; ++i) {
     if (_pkmnSpeciesList[i].getName() == name)
@@ -43,28 +60,17 @@ bool comparePkmnOrder(const PkmnSpecies *o1, const PkmnSpecies *o2) {
   return (o1->getIndex() < o2->getIndex());
 }
 
-vector<const PkmnSpecies *> PkmnSpeciesList::getBy(int filter, int value) {
+vector<const PkmnSpecies *> PkmnSpeciesList::getByElement(int element) {
 
   vector<const PkmnSpecies *> result;
 
   for (int i=0; i<190; ++i) {
-    int fetchedValue = 0;
-    
-    if (filter == PkmnSpeciesList::INDEX) {
-      fetchedValue = _pkmnSpeciesList[i].getIndex();
-    } else if (filter == PkmnSpeciesList::ID) {
-      fetchedValue = _pkmnSpeciesList[i].getId();
-    } else if (filter == PkmnSpeciesList::ELEMENT) {
-      fetchedValue = _pkmnSpeciesList[i].getElement1() == value ?
-                       _pkmnSpeciesList[i].getElement1() : 
-                       _pkmnSpeciesList[i].getElement2();
-    } else {
-      // some error in filter
-    }
-    
-    if (fetchedValue == value && _pkmnSpeciesList[i].isValid()) 
-      result.push_back(&(_pkmnSpeciesList[i]));
+    if (_pkmnSpeciesList[i].isValid() &&
+        (_pkmnSpeciesList[i].getElement1() == element ||
+         _pkmnSpeciesList[i].getElement2() == element))
+      result.push_back(&_pkmnSpeciesList[i]);
   }
+
   std::sort(result.begin(), result.end(), comparePkmnOrder);
   return result;
 

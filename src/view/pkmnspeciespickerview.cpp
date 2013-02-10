@@ -23,7 +23,7 @@ PkmnSpeciesPickerView::PkmnSpeciesPickerView (QWidget *parent) : QWidget(parent)
   for (int i=0; i<31; i++) _layout -> setRowStretch(i, 1);
 
   for (int i=0; i<151; ++i) {
-    const PkmnSpecies *actualPkmn = PkmnSpeciesList::getBy(PkmnSpeciesList::INDEX, i+1)[0];
+    const PkmnSpecies *actualPkmn = PkmnSpeciesList::getByIndex(i+1);
     _pkmns[i] = new QToolButton(gridWidget);
     _pkmns[i] -> setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     _pkmns[i] -> setIcon(QPixmap(":/img/spritesyellowcolor.png")
@@ -72,7 +72,7 @@ void PkmnSpeciesPickerView::selectByElement (int element) {
       _pkmns[i] -> setVisible(true);
     }
   } else {
-    std::vector<const PkmnSpecies *> list = PkmnSpeciesList::getBy(PkmnSpeciesList::ELEMENT, element);
+    std::vector<const PkmnSpecies *> list = PkmnSpeciesList::getByElement(element);
     for (unsigned int i=0; i<list.size(); i++) {
       _layout -> addWidget(_pkmns[list[i]->getIndex()-1], i/5, i%5);
       //_pkmns[i] -> setGeometry(QRect(5+100*(i%5), 5+90*(i/5), 95, 85));

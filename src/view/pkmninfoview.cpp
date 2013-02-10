@@ -170,8 +170,10 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   layout -> addLayout(organizeLayoutGeneralInfo());
   QHBoxLayout *asd = new QHBoxLayout();
   asd-> addLayout(organizeLayoutStatistics());
-  asd-> addLayout(organizeLayoutMoves());
-  layout->addLayout(asd);
+  asd-> addWidget(_species);
+
+  layout -> addLayout(asd);
+  layout -> addLayout(organizeLayoutMoves());
   layout -> addStretch(1);
 
   updateInfo(PkmnState(NULL, NULL));
@@ -184,26 +186,29 @@ QLayout *PkmnInfoView::organizeLayoutGeneralInfo() {
   QGridLayout *result = new QGridLayout();
 
   result->addWidget(new QLabel("Nickname:",this), 0, 0, 1, 1, Qt::AlignRight);
-  result->addWidget(_pkmnName, 0, 1, 1, 3);
+  result->addWidget(_pkmnName, 0, 1, 1, 5);
   result->addWidget(new QLabel("Trainer:", this), 1, 0, 1, 1, Qt::AlignRight);
-  result->addWidget(_pkmnTrainer, 1, 1, 1, 3);
+  result->addWidget(_pkmnTrainer, 1, 1, 1, 5);
   result->addWidget(new QLabel("Lvl:", this), 2, 0, 1, 1, Qt::AlignRight);
   result->addWidget(_pkmnLevel,   2, 1, 1, 1);
   result->addWidget(new QLabel("Exp:", this), 2, 2, 1, 1, Qt::AlignRight);
-  result->addWidget(_pkmnExp,     2, 3, 1, 1);
+  result->addWidget(_pkmnExp,     2, 3, 1, 3);
   result->addWidget(new QLabel("Aliment:", this), 3, 0, 1, 1, Qt::AlignRight);
   result->addWidget(_alimentPsn, 3, 1, 1, 1);
   result->addWidget(_alimentSlp, 3, 2, 1, 1);
   result->addWidget(_alimentBrn, 3, 3, 1, 1);
-  result->addWidget(_alimentFrz, 4, 1, 1, 1);
-  result->addWidget(_alimentPrl, 4, 2, 1, 1);
-  result->addWidget(_species, 0, 4, 5, 1);
+  result->addWidget(_alimentFrz, 3, 4, 1, 1);
+  result->addWidget(_alimentPrl, 3, 5, 1, 1);
+  //result->addWidget(_alimentFrz, 4, 1, 1, 1);
+  //result->addWidget(_alimentPrl, 4, 2, 1, 1);
+  //result->addWidget(_species, 0, 4, 5, 1);
 
   result->setColumnStretch(0, 1);
   result->setColumnStretch(1, 1);
   result->setColumnStretch(2, 1);
-  result->setColumnStretch(3, 2);
-  result->setColumnStretch(4, 2);
+  result->setColumnStretch(3, 1);
+  result->setColumnStretch(4, 1);
+  result->setColumnStretch(5, 1);
 
   return result;
 
@@ -365,7 +370,7 @@ void PkmnInfoView::updateInfo(const PkmnState info) {
     _move2       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE2))->getName()));
     _move3       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE3))->getName()));
     _move4       -> setText(QString::fromStdString(PkmnMoveList::get(info.get(MOVE4))->getName()));
-    const PkmnSpecies *species = PkmnSpeciesList::get(info.get(SPECIES));
+    const PkmnSpecies *species = PkmnSpeciesList::getById(info.get(SPECIES));
     _species     -> setIcon(QPixmap(":/img/spritesyellowcolor.png")
                             .copy(1+((species->getIndex()-1)%12)*(imgDim+1),
                                   1+((species->getIndex()-1)/12)*(imgDim+1),

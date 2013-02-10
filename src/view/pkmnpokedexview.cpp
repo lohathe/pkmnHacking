@@ -1,8 +1,10 @@
 #include "pkmnpokedexview.h"
+#include "pkmnspeciesdescriptorview.h"
 
 #include "pkmnsavestatemodel.h"
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QScrollArea>
 #include <QLabel>
 
@@ -28,8 +30,16 @@ PkmnPokedexView::PkmnPokedexView (QWidget *parent) : QWidget(parent) {
   QLabel *title = new QLabel("POKEDEX", this);
   title -> setStyleSheet("background:#000;color:#FFF;font-weight:bold;padding:3px 300px 3px 300px;");
   layout -> addWidget(title, 1, Qt::AlignHCenter);
-  layout -> addWidget(scrollArea, 20, Qt::AlignHCenter);
+  //layout -> addWidget(scrollArea, 20, Qt::AlignHCenter);
   //layout -> addStretch(100);
+
+  PkmnSpeciesDescriptorView *s = new PkmnSpeciesDescriptorView(this);
+  QHBoxLayout *central = new QHBoxLayout();
+  central->addWidget(scrollArea);
+  central->addWidget(s);
+  s->displayDescriptionFor(12);
+
+  layout->addLayout(central, 20);
 
   setLayout(layout);
 

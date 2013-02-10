@@ -45,7 +45,7 @@ void PkmnPartyListView::updateWholeList (vector<const PkmnSpecies *> pkmnList) {
     if (i < pkmnList.size())
       _activePkmnList[i] -> updateItem(pkmnList[i]);
     else
-      _activePkmnList[i] -> updateItem(PkmnSpeciesList::get(0));
+      _activePkmnList[i] -> updateItem(PkmnSpeciesList::getById(0));
   }
 //  if (_selected >= pkmnList.size()) {
 //    _activePkmnList[_selected] -> setSelected(false);

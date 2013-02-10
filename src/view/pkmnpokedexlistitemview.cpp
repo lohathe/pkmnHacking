@@ -8,7 +8,7 @@
 
 PkmnPokedexListItemView::PkmnPokedexListItemView(int pkmnIndex, QWidget *parent) :
   QWidget(parent),
-  _pkmnInfo(PkmnSpeciesList::getBy(PkmnSpeciesList::INDEX, pkmnIndex)[0]),
+  _pkmnInfo(PkmnSpeciesList::getByIndex(pkmnIndex)),
   _isSeen(false), _isCatched(false), _isMouseOver(false) {
 
   setFixedSize(300, 60);

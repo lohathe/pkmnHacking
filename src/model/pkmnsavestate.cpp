@@ -55,7 +55,7 @@ vector<const PkmnSpecies *> PkmnSaveState::getPartyPkmnList() const {
 
   for (int i=0; i<6; ++i) {
     const PkmnSpecies *activePkmn =
-      PkmnSpeciesList::get(_data[PkmnSaveState::PARTY_PKMN_SPECIES_OFFSET + i] & 0xFF);
+      PkmnSpeciesList::getById(_data[PkmnSaveState::PARTY_PKMN_SPECIES_OFFSET + i] & 0xFF);
     result.push_back(activePkmn);
   }
 
@@ -127,9 +127,9 @@ bool PkmnSaveState::setPartyPkmnParameter(int partyIndex, int info, int value) {
     _data[startingOffset + PkmnState::getOffset(SPECIES)] =
         static_cast<byte>(value);
     _data[startingOffset + PkmnState::getOffset(TYPE1)] =
-        PkmnSpeciesList::get(value)->getElement1();
+        PkmnSpeciesList::getById(value)->getElement1();
     _data[startingOffset + PkmnState::getOffset(TYPE2)] =
-        PkmnSpeciesList::get(value)->getElement2();
+        PkmnSpeciesList::getById(value)->getElement2();
 
   } else {
 
@@ -182,7 +182,7 @@ bool PkmnSaveState::createPartyPkmnAtIndex(int partyIndex, int species) {
     static_cast<byte>(0xFF);
 
   // :: set default value for newly created pokemon ::
-  setPartyPkmnName(partyIndex, PkmnSpeciesList::get(species)->getName());
+  setPartyPkmnName(partyIndex, PkmnSpeciesList::getById(species)->getUpperCaseName());
   setPartyPkmnParameter(partyIndex, SPECIES, species);
   setPartyPkmnParameter(partyIndex, HP,        0x0A);
   setPartyPkmnParameter(partyIndex, LEVELN,    0x01);

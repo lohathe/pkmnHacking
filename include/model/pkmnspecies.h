@@ -19,6 +19,7 @@ public:
   int getIndex() const;
   int getId() const;
   string getName() const;
+  string getUpperCaseName() const;
   byte getElement1() const;
   byte getElement2() const;
 
@@ -34,13 +35,10 @@ class PkmnSpeciesList {
 
 public:
 
-  static const int INDEX    = 0x01;
-  static const int ID       = 0x02;
-  static const int ELEMENT  = 0x03;
-
-  static const PkmnSpecies * get (int);
-  static const PkmnSpecies * get (const string &);
-  static vector<const PkmnSpecies *> getBy(int, int);
+  static const PkmnSpecies * getById (int);
+  static const PkmnSpecies * getByIndex (int);
+  static const PkmnSpecies * getByName (const string &);
+  static vector<const PkmnSpecies *> getByElement(int);
 
 private:
 

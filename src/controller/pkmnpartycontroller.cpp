@@ -129,7 +129,7 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
 
   bool outcome = true;
 
-  if (!(PkmnSpeciesList::get(selectedSpecies) -> isValid())) {
+  if (!(PkmnSpeciesList::getById(selectedSpecies) -> isValid())) {
     emit operationOutcomeEvent(false,
                                "No valid pokemon species selected.");
     return;
@@ -279,14 +279,14 @@ void PkmnPartyController::manageLvlParameter(int parameter, int newValue) {
 
 void PkmnPartyController::manageSpeciesParameter(int, int newValue) {
 
-  const PkmnSpecies *pkmn = PkmnSpeciesList::get(newValue);
+  const PkmnSpecies *pkmn = PkmnSpeciesList::getById(newValue);
   if (!(pkmn -> isValid())) {
     emit operationOutcomeEvent(false,
                                "Invalid pokemon species.");
     return;
   }
 
-  _model -> setPartyPkmnName(_selectedPartyIndex, pkmn->getName());
+  _model -> setPartyPkmnName(_selectedPartyIndex, pkmn->getUpperCaseName());
   _model -> setPartyPkmnParameter(_selectedPartyIndex, SPECIES, pkmn->getId());
   _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE1, pkmn->getElement1());
   _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE2, pkmn->getElement2());
