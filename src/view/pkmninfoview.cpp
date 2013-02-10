@@ -159,12 +159,20 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   _species -> setIconSize(QSize(scale*imgDim, scale*imgDim));
   connect(_species, SIGNAL(buttonClicked(int)),
           this, SIGNAL(speciesChangeEvent()));
-
+/*
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout -> addLayout(organizeLayoutGeneralInfo());
   layout -> addLayout(organizeLayoutStatistics());
   layout -> addLayout(organizeLayoutMoves());
   //layout -> addStretch(1);
+*/
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout -> addLayout(organizeLayoutGeneralInfo());
+  QHBoxLayout *asd = new QHBoxLayout();
+  asd-> addLayout(organizeLayoutStatistics());
+  asd-> addLayout(organizeLayoutMoves());
+  layout->addLayout(asd);
+  layout -> addStretch(1);
 
   updateInfo(PkmnState(NULL, NULL));
   setLayout(layout);
@@ -317,9 +325,6 @@ void PkmnInfoView::updateInfo(const PkmnState info) {
                             .scaled(scale*imgDim, scale*imgDim));
     QString speciesname = "---\n---/---";
     _species     -> setText(speciesname);
-    //_speciesName -> setText("---");
-    //_type1       -> setText("---");
-    //_type2       -> setText("---");
 
     setEnabled(false);
   } else {
@@ -371,9 +376,6 @@ void PkmnInfoView::updateInfo(const PkmnState info) {
         QString::fromStdString(Element::toString(species->getElement1())) + "/" +
         QString::fromStdString(Element::toString(species->getElement2()));
     _species     -> setText(speciesname);
-    //_speciesName -> setText(QString::fromStdString(species->getName()));
-    //_type1       -> setText(QString::fromStdString(Element::toString(species->getElement1())));
-    //_type2       -> setText(QString::fromStdString(Element::toString(species->getElement2())));
 
     setEnabled(true);
   }

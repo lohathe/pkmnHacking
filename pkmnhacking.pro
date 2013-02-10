@@ -45,7 +45,8 @@ HEADERS += include/controller/pkmnpartycontroller.h \
     include/controller/pkmnpokedexcontroller.h \
     include/view/pkmnpokedexview.h \
     include/view/pkmnpokedexlistitemview.h \
-    include/model/pkmnpokedex.h
+    include/model/pkmnpokedex.h \
+    include/model/pkmnspeciesdescriptor.h
 SOURCES += src/main.cpp \
            src/controller/pkmnpartycontroller.cpp \
            src/controller/pkmnsavestatecontroller.cpp \
@@ -67,5 +68,6 @@ SOURCES += src/main.cpp \
     src/controller/pkmnpokedexcontroller.cpp \
     src/view/pkmnpokedexview.cpp \
     src/view/pkmnpokedexlistitemview.cpp \
-    src/model/pkmnpokedex.cpp
+    src/model/pkmnpokedex.cpp \
+    src/model/pkmnspeciesdescriptor.cpp
 RESOURCES += pkmnhacking.qrc

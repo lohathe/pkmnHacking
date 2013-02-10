@@ -118,7 +118,7 @@ void PkmnMoveListItem::paintEvent (QPaintEvent *) {
     p.fillRect(0, 0, width(), height(), QColor(200, 200, 200));
   }
 
-  p.drawText(5,   20, QString::fromStdString(_pkmnMove.getName()));
+  p.drawText(5,   20, QString::number(_pkmnMove.getId()) + " " + QString::fromStdString(_pkmnMove.getName()));
   p.drawText(285, 20, "(" + QString::fromStdString(Element::toString(_pkmnMove.getElement())) + ")");
   p.drawText(405, 20, QString::number(_pkmnMove.getPwr()));
   p.drawText(455, 20, QString::number(_pkmnMove.getPP()));
