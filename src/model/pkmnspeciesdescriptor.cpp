@@ -1,8 +1,14 @@
 #include "pkmnspeciesdescriptor.h"
 
+#include "pkmnspecies.h"
+#include "pkmnmove.h"
+
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <cstdio>
+
+#include <QFile>
 
 MoveLevel::MoveLevel(int level, int move) : _level(level), _move(move) {}
 int MoveLevel::getLevel() const { return _level; }
@@ -27,9 +33,25 @@ PkmnSpeciesDescriptor::PkmnSpeciesDescriptor (
     _basicSpd(basicSpd),
     _basicSpc(basicSpc),
     _learningSet(learningSet) { }
+//{
+//  for (unsigned int i=0; i<learningSet.size(); ++i)
+//    _learningSet.push_back(MoveLevel(learningSet[i].getLevel(), learningSet[i].getMove()));
+//}
 
 int PkmnSpeciesDescriptor::getIndex() const { return _pkmnIndex; }
 int PkmnSpeciesDescriptor::getEvMethod() const { return _pkmnEvolutionMethod; }
+string PkmnSpeciesDescriptor::getEvMethodString() const {
+  string result;
+  if (_pkmnEvolutionMethod == 0) result = "base";
+  else if (_pkmnEvolutionMethod >= 1) result = "lvl "+ static_cast<std::ostringstream*>( &(std::ostringstream() << _pkmnEvolutionMethod) )->str();
+  else if (_pkmnEvolutionMethod == PkmnSpeciesDescriptor::TRADE) result = "trade";
+  else if (_pkmnEvolutionMethod == PkmnSpeciesDescriptor::FIRESTONE) result = "fstone";
+  else if (_pkmnEvolutionMethod == PkmnSpeciesDescriptor::WATERSTONE) result = "wstone";
+  else if (_pkmnEvolutionMethod == PkmnSpeciesDescriptor::THUNDERSTONE) result = "tstone";
+  else if (_pkmnEvolutionMethod == PkmnSpeciesDescriptor::LEAFSTONE) result = "lstone";
+  else if (_pkmnEvolutionMethod == PkmnSpeciesDescriptor::MOONSTONE) result = "mstone";
+  return result;
+}
 int PkmnSpeciesDescriptor::getLvlSpeed() const { return _levelingSpeed; }
 int PkmnSpeciesDescriptor::getBasicHP() const { return _basicHp; }
 int PkmnSpeciesDescriptor::getBasicAtt() const { return _basicAtt; }
@@ -74,7 +96,7 @@ vector<int> PkmnSpeciesDescriptor::getPrevEvolutions() const {
 
 PkmnSpeciesDescriptor *PkmnSpeciesDescriptorList::_pkmnList[] = {NULL};
 
-PkmnSpeciesDescriptor *PkmnSpeciesDescriptorList::get(int index) {
+const PkmnSpeciesDescriptor *PkmnSpeciesDescriptorList::get(int index) {
 
   if (PkmnSpeciesDescriptorList::_pkmnList[0] == NULL)
     initiazlizePkmnList();
@@ -88,9 +110,10 @@ PkmnSpeciesDescriptor *PkmnSpeciesDescriptorList::get(int index) {
 
 void PkmnSpeciesDescriptorList::initiazlizePkmnList() {
 
-  std::ifstream infile(":/img/pkmndescriptor");
+  std::ifstream infile;
+  infile.open("./pkmndescriptor", std::ios::in);
 
-  for (int i=0; i<151; ++i) {
+  for (int i=0; i<152; ++i) {
 
     char line[80];
     int index, evmethod, lvlspeed, hp, att, def, spd, spc, lvlmv, mv;
@@ -102,6 +125,7 @@ void PkmnSpeciesDescriptorList::initiazlizePkmnList() {
     infile.getline(line, 80);
     while (std::sscanf(line, "%d %d", &lvlmv, &mv) == 2) {
       learnset.push_back(MoveLevel(lvlmv, mv));
+      infile.getline(line, 80);
     }
 
     PkmnSpeciesDescriptorList::_pkmnList[i] =
@@ -111,3 +135,25 @@ void PkmnSpeciesDescriptorList::initiazlizePkmnList() {
   }
 
 }
+
+void PkmnSpeciesDescriptorList::print(int start, int stop) {
+
+  for (int i=start; i<stop; i++) {
+    const PkmnSpeciesDescriptor *desc = PkmnSpeciesDescriptorList::get(i);
+    printf("%s : %d %d %d %d %d\n",
+           PkmnSpeciesList::getByIndex(desc->getIndex())->getName().c_str(),
+           desc->getBasicHP(),
+           desc->getBasicAtt(),
+           desc->getBasicDef(),
+           desc->getBasicSpd(),
+           desc->getBasicSpc());
+    vector<MoveLevel> moves = desc->getLearningSet();
+    for (unsigned int j=0; j<moves.size(); ++j) {
+      printf("  %d\t:%s\n",
+             moves[j].getLevel(), PkmnMoveList::get(moves[j].getMove())->getName().c_str());
+    }
+    printf("----------------%d\n\n", i);
+  }
+
+}
+

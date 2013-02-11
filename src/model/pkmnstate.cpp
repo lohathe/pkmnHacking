@@ -29,7 +29,7 @@ int PkmnState::getMaxValue (int info) {
   int result = 0xFF;
   if (info & (SPECIES)) result = 0xBE;
   else if (info & (HP | MAXHP | ATT | DEF | SPD | SPC)) result = 0xFFFF;
-  else if (info & (LEVEL | LEVELN)) result = 0x63;
+  else if (info & (LEVEL | LEVELN)) result = 0x64;
   else if (info & (ALIMENT)) result = 0x40;
   else if (info & (TYPE1 | TYPE2)) result = 0x1A;
   else if (info & (MOVE1 | MOVE2 | MOVE3 | MOVE4)) result = 0xA5;

@@ -27,12 +27,13 @@ public:
 
 signals:
   void saveToFileEvent();
+  void openFileEvent(const string &);
 
 public slots:
   void manageOperationOutcome(bool, const string &);
 
 private slots:
-
+  void openFile();
 
 private:
 

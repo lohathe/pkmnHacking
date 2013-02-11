@@ -10,6 +10,8 @@
 #include <string>
 using std::string;
 
+#include <QFileDialog>
+
 PkmnSaveStateController::PkmnSaveStateController (string filepath) {
 
   _model = new PkmnSaveStateModel(new PkmnSaveState(filepath, true));
@@ -31,7 +33,6 @@ PkmnSaveStateController::PkmnSaveStateController (string filepath) {
           _view, SLOT(manageOperationOutcome(bool,string)));
 
 
-
   _view -> manageOperationOutcome(true, "Application started.");
 
 }
@@ -48,5 +49,11 @@ void PkmnSaveStateController::manageSaveToFile() {
   else
     emit operationOutcomeEvent(false,
                                "Some error while saving changes to file.");
+
+}
+
+void PkmnSaveStateController::manageOpenFile(string filepath) {
+
+  filepath = filepath + "000";
 
 }

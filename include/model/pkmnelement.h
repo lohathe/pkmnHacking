@@ -3,6 +3,7 @@
 
 #include "pkmndataformat.h"
 
+#include <algorithm>
 #include <string>
 using std::string;
 
@@ -45,6 +46,12 @@ public:
       case Element::DRAGON   : return "dragon";
     }
     return "no element";
+  }
+
+  static string toUpperString(byte element) {
+    string result = Element::toString(element);
+    std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+    return result;
   }
 
 };

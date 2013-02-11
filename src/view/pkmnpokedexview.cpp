@@ -14,11 +14,14 @@ PkmnPokedexView::PkmnPokedexView (QWidget *parent) : QWidget(parent) {
 
   QWidget *listWidget = new QWidget(this);
   QVBoxLayout *scrollListLayout = new QVBoxLayout();
+  PkmnSpeciesDescriptorView *s = new PkmnSpeciesDescriptorView(this);
 
   for (int i=0; i<151; i++) {
     _pkmnList[i] = new PkmnPokedexListItemView(i+1, listWidget);
     connect(_pkmnList[i], SIGNAL(clickedEvent(int)),
             this, SIGNAL(pkmnPokedexEntryClicked(int)));
+    connect(_pkmnList[i], SIGNAL(displayInfoEvent(int)),
+            s, SLOT(displayDescriptionFor(int)));
     scrollListLayout -> addWidget(_pkmnList[i]);
   }
   listWidget -> setLayout(scrollListLayout);
@@ -33,7 +36,6 @@ PkmnPokedexView::PkmnPokedexView (QWidget *parent) : QWidget(parent) {
   //layout -> addWidget(scrollArea, 20, Qt::AlignHCenter);
   //layout -> addStretch(100);
 
-  PkmnSpeciesDescriptorView *s = new PkmnSpeciesDescriptorView(this);
   QHBoxLayout *central = new QHBoxLayout();
   central->addWidget(scrollArea);
   central->addWidget(s);

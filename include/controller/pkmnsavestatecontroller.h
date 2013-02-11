@@ -27,6 +27,7 @@ signals:
 public slots:
 
   void manageSaveToFile();
+  void manageOpenFile(string);
 
 private:
   PkmnSaveStateModel *_model;

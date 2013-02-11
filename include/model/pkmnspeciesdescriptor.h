@@ -34,8 +34,14 @@ public:
   static const int LEAFSTONE = -5;
   static const int MOONSTONE = -6;
 
+  static const int FAST = 1;
+  static const int MEDIUMFAST = 2;
+  static const int MEDIUMSLOW = 3;
+  static const int SLOW = 4;
+
   int getIndex() const;
   int getEvMethod() const;
+  string getEvMethodString() const;
   int getLvlSpeed() const;
   int getBasicHP() const;
   int getBasicAtt() const;
@@ -65,7 +71,8 @@ class PkmnSpeciesDescriptorList {
 
 public:
 
-  static PkmnSpeciesDescriptor *get(int);
+  static const PkmnSpeciesDescriptor *get(int);
+  static void print(int, int);
 
 private:
 

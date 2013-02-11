@@ -18,6 +18,7 @@ public:
 signals:
 
   void clickedEvent(int);
+  void displayInfoEvent(int);
 
 public slots:
 

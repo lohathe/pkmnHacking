@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+#include <vector>
+using std::vector;
+
 class PkmnSpeciesDescriptorView : public QWidget {
 
   Q_OBJECT
@@ -20,11 +23,17 @@ public slots:
 protected:
 
   virtual void paintEvent(QPaintEvent *);
+  virtual void mouseReleaseEvent(QMouseEvent *);
 
 private:
 
-  int _displayedPkmnIndex;
+  struct Link {
+    Link(int x, int y, int dim, int info) {_x=x; _y=y; _dim=dim, _info=info;}
+    int _x, _y, _dim, _info;
+  };
 
+  int _displayedPkmnIndex;
+  vector<Link> _mouseLinks;
 
 };
 

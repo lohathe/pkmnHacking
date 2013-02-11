@@ -19,7 +19,6 @@ INCLUDEPATH += . \
            include/model \
            include/controller \
            include/view
-
 # Input
 HEADERS += include/controller/pkmnpartycontroller.h \
            include/controller/pkmnsavestatecontroller.h \
@@ -47,7 +46,8 @@ HEADERS += include/controller/pkmnpartycontroller.h \
     include/view/pkmnpokedexlistitemview.h \
     include/model/pkmnpokedex.h \
     include/model/pkmnspeciesdescriptor.h \
-    include/view/pkmnspeciesdescriptorview.h
+    include/view/pkmnspeciesdescriptorview.h \
+    include/model/pkmncomputevaluesutility.h
 SOURCES += src/main.cpp \
            src/controller/pkmnpartycontroller.cpp \
            src/controller/pkmnsavestatecontroller.cpp \
@@ -71,5 +71,7 @@ SOURCES += src/main.cpp \
     src/view/pkmnpokedexlistitemview.cpp \
     src/model/pkmnpokedex.cpp \
     src/model/pkmnspeciesdescriptor.cpp \
-    src/view/pkmnspeciesdescriptorview.cpp
+    src/view/pkmnspeciesdescriptorview.cpp \
+    src/model/pkmncomputevaluesutility.cpp
 RESOURCES += pkmnhacking.qrc
+#DISTFILES += img/pkmndescriptor

@@ -2,6 +2,8 @@
 #include "pkmnpartyview.h"
 #include "pkmnsavestatemodel.h"
 #include "pkmnaliment.h"
+#include "pkmnspeciesdescriptor.h"
+#include "pkmncomputevaluesutility.h"
 
 #include <QObject>
 
@@ -152,6 +154,8 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
   } else {
     managePkmnParameterChanged(SPECIES, selectedSpecies);
   }
+
+  if (outcome /* && GAMECOHERENCE */) setPartyPkmnBasicStats(_selectedPartyIndex);
 
   _isChangingMove = false;
   _view -> setSelectedPartyPkmn(_selectedPartyIndex);
@@ -318,5 +322,79 @@ void PkmnPartyController::managePPParameter(int parameter, int newValue) {
   int oldValue = _model -> getPartyPkmnParameter(_selectedPartyIndex, parameter);
   int value = (oldValue & 0xC0) | (newValue & 0x3F);
   _model -> setPartyPkmnParameter(_selectedPartyIndex, parameter, value);
+
+}
+
+void PkmnPartyController::setPartyPkmnBasicStats(int partyIndex) {
+
+  const PkmnState pkmn = _model->getPartyPkmnInfo(partyIndex);
+  const PkmnSpecies *species = PkmnSpeciesList::getById(pkmn.get(SPECIES));
+  const PkmnSpeciesDescriptor *descriptor =
+      PkmnSpeciesDescriptorList::get(species->getIndex());
+  const vector<MoveLevel>  learnset = descriptor->getLearningSet();
+  int pkmnLevel = pkmn.get(LEVEL);
+
+  // setting right amount of exp referring to level
+  _model->setPartyPkmnParameter
+      (partyIndex,
+       EXP,
+       PkmnComputeValuesUtility::computeExpForLevel(descriptor, pkmnLevel));
+
+  // setting stats values
+  _model->setPartyPkmnParameter
+      (partyIndex,
+       MAXHP,
+       PkmnComputeValuesUtility::computeStat(
+         descriptor, MAXHP, pkmnLevel, pkmn.get(HPEV), pkmn.get(IV)));
+  _model->setPartyPkmnParameter
+      (partyIndex,
+       ATT,
+       PkmnComputeValuesUtility::computeStat(
+         descriptor, ATT, pkmnLevel, pkmn.get(ATTEV), pkmn.get(IV)));
+  _model->setPartyPkmnParameter
+      (partyIndex,
+       DEF,
+       PkmnComputeValuesUtility::computeStat(
+         descriptor, DEF, pkmnLevel, pkmn.get(DEFEV), pkmn.get(IV)));
+  _model->setPartyPkmnParameter
+      (partyIndex,
+       SPD,
+       PkmnComputeValuesUtility::computeStat(
+         descriptor, SPD, pkmnLevel, pkmn.get(SPDEV), pkmn.get(IV)));
+  _model->setPartyPkmnParameter
+      (partyIndex,
+       SPC,
+       PkmnComputeValuesUtility::computeStat(
+         descriptor, SPC, pkmnLevel, pkmn.get(SPCEV), pkmn.get(IV)));
+
+  // setting default moves
+  unsigned int i = 0;
+  for (;
+       i<learnset.size() && learnset[i].getLevel() <= pkmnLevel;
+       ++i) {
+    int infoMove, infoPP;
+    if (i%4 == 0) { infoMove = MOVE1; infoPP = MOVE1PP; }
+    else if (i%4 == 1) { infoMove = MOVE2; infoPP = MOVE2PP; }
+    else if (i%4 == 2) { infoMove = MOVE3; infoPP = MOVE3PP; }
+    else { infoMove = MOVE4; infoPP = MOVE4PP; }
+    _model->setPartyPkmnParameter
+        (partyIndex,
+         infoMove,
+         learnset[i].getMove());
+    _model->setPartyPkmnParameter
+         (partyIndex,
+          infoPP,
+          PkmnMoveList::get(learnset[i].getMove())->getPP());
+  }
+  // deleting old move if any
+  for (; i<4; ++i) {
+    int infoMove, infoPP;
+    if (i%4 == 0) { infoMove = MOVE1; infoPP = MOVE1PP; }
+    else if (i%4 == 1) { infoMove = MOVE2; infoPP = MOVE2PP; }
+    else if (i%4 == 2) { infoMove = MOVE3; infoPP = MOVE3PP; }
+    else { infoMove = MOVE4; infoPP = MOVE4PP; }
+    _model->setPartyPkmnParameter (partyIndex, infoMove, 0);
+    _model->setPartyPkmnParameter (partyIndex, infoPP, 0);
+  }
 
 }

@@ -58,6 +58,7 @@ private:
   void manageSpeciesParameter(int, int);
   void manageAlimentParameter(int, int);
   void managePPParameter(int, int);
+  void setPartyPkmnBasicStats(int);
 
 };
 

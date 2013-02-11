@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QPaintEvent>
+#include <QMouseEvent>
 #include <QEvent>
 #include <QFormLayout>
 #include <QHBoxLayout>
@@ -11,7 +12,7 @@ PkmnPokedexListItemView::PkmnPokedexListItemView(int pkmnIndex, QWidget *parent)
   _pkmnInfo(PkmnSpeciesList::getByIndex(pkmnIndex)),
   _isSeen(false), _isCatched(false), _isMouseOver(false) {
 
-  setFixedSize(300, 60);
+  setFixedSize(250, 60);
 
 }
 
@@ -31,11 +32,14 @@ void PkmnPokedexListItemView::paintEvent(QPaintEvent *e) {
 
   QPainter p (this);
 
+  int w = width();
+  int h = height();
+
   if (_isMouseOver) {
-    p.fillRect(0, 10, 300, 40, QColor(255, 255,200));
+    p.fillRect(0, 10, w, 40, QColor(255, 255,200));
   }
   if (_pkmnInfo->getIndex()%2 == 1 && !_isMouseOver) {
-    p.fillRect(0, 10, 300, 40, QColor(200, 200, 160));
+    p.fillRect(0, 10, w, 40, QColor(200, 200, 160));
   }
 
   if (_isSeen) {
@@ -75,9 +79,12 @@ void PkmnPokedexListItemView::leaveEvent(QEvent *) {
   update();
 }
 
-void PkmnPokedexListItemView::mousePressEvent(QMouseEvent *) {
+void PkmnPokedexListItemView::mousePressEvent(QMouseEvent *e) {
 
-  emit clickedEvent(_pkmnInfo->getIndex());
+  if (e->x() <= 200)
+    emit clickedEvent(_pkmnInfo->getIndex());
+  else
+    emit displayInfoEvent(_pkmnInfo->getIndex());
 }
 
 /*

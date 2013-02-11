@@ -147,7 +147,7 @@ const PkmnMove PkmnMoveList::_movesList[] = {
 	PkmnMove( 86, "Thunder Wave ", Element::ELECTRIC, Type::STATUS  , 20,   0, 100),
 	PkmnMove( 87, "Thunder"      , Element::ELECTRIC, Type::SPECIAL , 10, 120,  70),
   PkmnMove( 88, "Rock Throw"   , Element::ROCK    , Type::PHYSICAL, 15,  50,  65),
-	PkmnMove( 89, "Earthqake"    , Element::GROUND  , Type::PHYSICAL, 10, 100, 100),
+  PkmnMove( 89, "Earthquake"   , Element::GROUND  , Type::PHYSICAL, 10, 100, 100),
 	PkmnMove( 90, "Fissure"      , Element::GROUND  , Type::PHYSICAL,  5,   0,   0),
   PkmnMove( 91, "Dig"          , Element::GROUND  , Type::PHYSICAL, 10, 100, 100),
   PkmnMove( 92, "Toxic"        , Element::POISON  , Type::STATUS  , 10,   0,  85),
