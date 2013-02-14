@@ -6,7 +6,6 @@ using std::string;
 #include "pkmndataformat.h"
 
 enum PkmnStateInfo {
-  NAME      = 0x00000000,
   SPECIES   = 0x00000001,
   HP        = 0x00000002,
   LEVELN    = 0x00000004,
@@ -35,7 +34,9 @@ enum PkmnStateInfo {
   ATT       = 0x02000000,
   DEF       = 0x04000000,
   SPD       = 0x08000000,
-  SPC       = 0x10000000
+  SPC       = 0x10000000,
+  PKMNNAME  = 0x20000000,
+  OTNAME    = 0x40000000
 };
 
 class PkmnState {

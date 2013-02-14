@@ -44,8 +44,8 @@ bool PkmnSaveState::saveToFile() const {
 
 int PkmnSaveState::getTrainerId() const {
 
-  return static_cast<int>(((_data[PkmnSaveState::TRAINER_OFFSET]<<8)&0xFF00) +
-                           (_data[PkmnSaveState::TRAINER_OFFSET + 1]&0x00FF));
+  return static_cast<int>(((_data[PkmnSaveState::ORIGINAL_TRAINER_ID_OFFSET]<<8)&0xFF00) +
+                           (_data[PkmnSaveState::ORIGINAL_TRAINER_ID_OFFSET + 1]&0x00FF));
 
 }
 
@@ -276,17 +276,17 @@ bool PkmnSaveState::pkmnExistsAtPartyIndex (int index) const {
 
 PkmnPokedex PkmnSaveState::getPkmnPokedex() const {
   return PkmnPokedex(
-        &_data[PkmnSaveState::PKMN_POKEDEX_SEEN_OFFSET],
-        &_data[PkmnSaveState::PKMN_POKEDEX_CATCH_OFFSET]);
+        &_data[PkmnSaveState::POKEDEX_PKMN_SEEN_OFFSET],
+        &_data[PkmnSaveState::POKEDEX_PKMN_CATCH_OFFSET]);
 }
 bool PkmnSaveState::setPkmnPokedexSeen(int pkmnIndex, bool isSeen) {
 
   pkmnIndex = pkmnIndex - 1;
   int mask = 0x01<<(pkmnIndex % 8);
   if (isSeen) {
-    _data[PkmnSaveState::PKMN_POKEDEX_SEEN_OFFSET + pkmnIndex/8] |= mask;
+    _data[PkmnSaveState::POKEDEX_PKMN_SEEN_OFFSET + pkmnIndex/8] |= mask;
   } else {
-    _data[PkmnSaveState::PKMN_POKEDEX_SEEN_OFFSET + pkmnIndex/8] &= ~mask;
+    _data[PkmnSaveState::POKEDEX_PKMN_SEEN_OFFSET + pkmnIndex/8] &= ~mask;
   }
   return true;
 
@@ -296,9 +296,9 @@ bool PkmnSaveState::setPkmnPokedexCatched(int pkmnIndex, bool isCatched) {
   pkmnIndex = pkmnIndex - 1;
   int mask = 0x01<<(pkmnIndex % 8);
   if (isCatched) {
-    _data[PkmnSaveState::PKMN_POKEDEX_CATCH_OFFSET + pkmnIndex/8] |= mask;
+    _data[PkmnSaveState::POKEDEX_PKMN_CATCH_OFFSET + pkmnIndex/8] |= mask;
   } else {
-    _data[PkmnSaveState::PKMN_POKEDEX_CATCH_OFFSET + pkmnIndex/8] &= ~mask;
+    _data[PkmnSaveState::POKEDEX_PKMN_CATCH_OFFSET + pkmnIndex/8] &= ~mask;
   }
   return true;
 

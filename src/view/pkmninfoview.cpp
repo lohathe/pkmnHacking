@@ -14,7 +14,7 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   scale = 2;
   imgDim = 56;
 
-  _pkmnName    = new PkmnLineEdit(this, NAME);
+  _pkmnName    = new PkmnLineEdit(this, PKMNNAME);
   _pkmnName -> setMaxLength(10);
   connect(_pkmnName, SIGNAL(valueChanged(const string &)),
           this, SIGNAL(pkmnNameChangedEvent(const string &)));
