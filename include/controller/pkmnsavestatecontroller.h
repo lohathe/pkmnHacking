@@ -27,7 +27,7 @@ signals:
 public slots:
 
   void manageSaveToFile();
-  void manageOpenFile(string);
+  void manageOpenFile();
 
 private:
   PkmnSaveStateModel *_model;
@@ -35,6 +35,8 @@ private:
 
   PkmnPartyController *_partyController;
   PkmnPokedexController *_pokedexController;
+
+  void createActions();
 
 };
 

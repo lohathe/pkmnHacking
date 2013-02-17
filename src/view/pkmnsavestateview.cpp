@@ -52,30 +52,9 @@ void PkmnSaveStateView::createMyStatusBar() {
 
 void PkmnSaveStateView::createMyToolBar() {
 
-  _toolBar = addToolBar("Show");
+  _toolBar = addToolBar("Main Toolbar");
   _toolBar -> setFloatable(false);
   _toolBar -> setMovable(false);
-
-  QAction *openFile = new QAction(QIcon::fromTheme("document-open"), "Open", this);
-  connect(openFile, SIGNAL(triggered()), this, SLOT(openFile()));
-
-  QAction *saveToFile = new QAction(QIcon::fromTheme("document-save"), "Save", this);
-  connect(saveToFile, SIGNAL(triggered()), this, SIGNAL(saveToFileEvent()));
-
-  QActionGroup *showGroup = new QActionGroup(this);
-  QAction *showParty = new QAction(QIcon(":/img/pokeballSprite.png"), "Party Pokemon", showGroup);
-  showParty->setCheckable(true);
-  connect(showParty, SIGNAL(toggled(bool)), _partyView, SLOT(setVisible(bool)));
-
-  QAction *showPokedex = new QAction(QIcon(":/img/pokeballSprite.png"), "Pokedex", showGroup);
-  showPokedex->setCheckable(true);
-  connect(showPokedex, SIGNAL(toggled(bool)), _pokedexView, SLOT(setVisible(bool)));
-
-  _toolBar -> addAction(openFile);
-  _toolBar -> addAction(saveToFile);
-  _toolBar -> addSeparator();
-  _toolBar -> addAction(showParty);
-  _toolBar -> addAction(showPokedex);
 
 }
 
@@ -107,15 +86,6 @@ PkmnPokedexView *PkmnSaveStateView::getPokedexView() {
   return _pokedexView;
 }
 
-void PkmnSaveStateView::openFile() {
-
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),"./../",tr("PkmnYellow Save Files (*.sav)"));
-  if (fileNames.size() == 0)
-    return;
-  if (fileNames.size() > 1) {
-    manageOperationOutcome(false, "Cannot open more than a file at time.");
-    return;
-  }
-  emit openFileEvent(fileNames[0].toStdString());
-
+QToolBar *PkmnSaveStateView::getMainToolBar() {
+  return _toolBar;
 }

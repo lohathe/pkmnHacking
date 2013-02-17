@@ -55,10 +55,10 @@ bool PkmnSaveStateModel::setPartyPkmnParameter(int partyIndex, int info, int val
   return outcome;
 
 }
-bool PkmnSaveStateModel::setPartyPkmnName(int partyIndex, string value) {
+bool PkmnSaveStateModel::setPartyPkmnStrParam(int partyIndex, int info, const string &value) {
 
   bool outcome;
-  outcome = _saveState -> setPartyPkmnName(partyIndex, value);
+  outcome = _saveState -> setPartyPkmnStrParam(partyIndex, info, value);
 
   if (outcome) {
     emit changedPkmnPartyInfoEvent();
@@ -99,6 +99,21 @@ bool PkmnSaveStateModel::deletePartyPkmnAtIndex(int partyIndex) {
 bool PkmnSaveStateModel::saveToFile() const {
 
   return _saveState -> saveToFile();
+
+}
+
+bool PkmnSaveStateModel::openFile(const string &filepath) {
+
+  bool outcome;
+  outcome = _saveState -> openFile(filepath);
+
+  if (outcome) {
+    emit changedPkmnPartyInfoEvent();
+    emit changedPkmnPartyListEvent();
+    emit changedPkmnPokedexEvent();
+  }
+
+  return outcome;
 
 }
 

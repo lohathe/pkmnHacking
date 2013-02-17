@@ -37,7 +37,7 @@ public:
   PkmnLineEdit (QWidget *, int);
 
 signals:
-  void valueChanged(const string &);
+  void valueChanged(int, const string &);
 
 private slots:
   void manageEditingFinished();

@@ -1,12 +1,12 @@
 #include "pkmnstate.h"
 #include "pkmnstringreader.h"
 
-PkmnState::PkmnState(const byte *data, const byte *name)
-  : _data(data), _name(name) {}
+PkmnState::PkmnState(const byte *data, const byte *name, const byte *otname)
+  : _data(data), _name(name), _otname(otname) {}
 
 bool PkmnState::isValid() const {
 
-  return (_data != NULL) && (_name != NULL);
+  return (_data != NULL) && (_name != NULL) && (_otname != NULL);
 
 }
 
@@ -92,7 +92,12 @@ int PkmnState::get (int info) const {
   return result;
 }
 
-string PkmnState::getName() const {
-  return PkmnStringReader::toStdString(_name);
+string PkmnState::getStr(int info) const {
+  string result;
+  if (info == PKMNNAME)
+    result = PkmnStringReader::toStdString(_name);
+  else if (info == OTNAME)
+    result = PkmnStringReader::toStdString(_otname);
+  return result;
 }
 

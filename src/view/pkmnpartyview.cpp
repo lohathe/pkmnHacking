@@ -1,6 +1,6 @@
 #include "pkmnpartyview.h"
 
-#include "pkmnpartylistview.h"
+#include "pkmnlistview.h"
 #include "pkmninfoview.h"
 #include "pkmnspeciespickerview.h"
 #include "pkmnmovepickerview.h"
@@ -25,8 +25,8 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
           this,       SIGNAL(partyPkmnSelectedEvent(int)));
 
   _pkmnInfo = new PkmnInfoView(this);
-  connect(_pkmnInfo, SIGNAL(pkmnNameChangedEvent(const string &)),
-          this,      SLOT(managePkmnNameChanged(const string &)));
+  connect(_pkmnInfo, SIGNAL(pkmnStrParamChangedEvent(int, const string &)),
+          this,      SLOT(managePkmnStrParamChanged(int, const string &)));
   connect(_pkmnInfo, SIGNAL(pkmnParameterChangedEvent(int,int)),
           this,      SLOT(managePkmnParameterChanged(int,int)));
   connect(_pkmnInfo, SIGNAL(speciesChangeEvent()),
@@ -57,7 +57,10 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   hlayout -> addLayout(leftPanel, 0);
   hlayout -> addLayout(rightPanel, 1);
 
-  QLabel *title = new QLabel("POKEMON PARY", this);
+  //QLabel *title = new QLabel("POKEMON PARTY", this);
+  QString q = "ASD";
+  q = q+ QChar(0x2642);
+  QLabel *title = new QLabel(q, this);
   title -> setStyleSheet("background:#000;color:#FFF;font-weight:bold;padding:3px 300px 3px 300px;");
   QVBoxLayout *layout = new QVBoxLayout();
   layout -> addWidget(title, 1, Qt::AlignHCenter);
@@ -78,7 +81,7 @@ void PkmnPartyView::setSelectedPartyPkmn(int partyIndex) {
 void PkmnPartyView::displayPkmnInfo() {
 
   if (_selectedPartyPkmn == 0)
-    _pkmnInfo -> updateInfo (PkmnState(NULL, NULL));
+    _pkmnInfo -> updateInfo (PkmnState(NULL, NULL, NULL));
   else {
     _pkmnInfo -> updateInfo (_model -> getPartyPkmnInfo(_selectedPartyPkmn));
   }
@@ -98,6 +101,9 @@ void PkmnPartyView::displayMovePicker() {
   _speciesPicker -> setVisible(false);
   _movePicker -> setVisible(true);
   _pkmnInfo -> setVisible(false);
+}
+void PkmnPartyView::setCoherencyEnabled(bool enabled) {
+  _pkmnInfo -> setAuthorizationEnable(!enabled);
 }
 
 void PkmnPartyView::connectModel(PkmnSaveStateModel *model) {
@@ -127,11 +133,11 @@ void PkmnPartyView::manageChangedPkmnPartyInfo() {
 
 }
 
-void PkmnPartyView::managePkmnNameChanged(const string &name) {
+void PkmnPartyView::managePkmnStrParamChanged(int info, const string &name) {
 
   if (_disableUpdate)
     return;
-  emit pkmnNameChangedEvent(name);
+  emit pkmnStrParamChangedEvent(info, name);
 
 }
 void PkmnPartyView::managePkmnParameterChanged(int info, int value) {

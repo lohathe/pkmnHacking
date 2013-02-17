@@ -5,46 +5,53 @@
 #include "pkmnmove.h"
 #include "pkmnspecies.h"
 
+#include "pkmnelementpickerview.h"
+
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
+PkmnInfoView::PkmnInfoView (QWidget *parent)
+  : QWidget(parent), _fullEnable(true) {
 
   scale = 2;
   imgDim = 56;
 
+  initializeWidgets();
+  connectWidgets();
+
+  QVBoxLayout *middleV = new QVBoxLayout();
+  middleV -> addLayout(organizeLayoutStatistics());
+  middleV -> addLayout(organizeLayoutMoves());
+
+  QHBoxLayout *middleH = new QHBoxLayout();
+  middleH -> addLayout(middleV);
+  middleH -> addSpacing(20);
+  middleH -> addLayout(organizeLayoutSpecies());
+
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout -> addLayout(organizeLayoutGeneralInfo());
+  layout -> addLayout(middleH);
+  layout -> addStretch(1);
+
+  updateInfo(PkmnState(NULL, NULL, NULL));
+  setLayout(layout);
+
+}
+
+void PkmnInfoView::initializeWidgets() {
   _pkmnName    = new PkmnLineEdit(this, PKMNNAME);
   _pkmnName -> setMaxLength(10);
-  connect(_pkmnName, SIGNAL(valueChanged(const string &)),
-          this, SIGNAL(pkmnNameChangedEvent(const string &)));
-
   _pkmnLevel   = new PkmnSpinBox(this, LEVEL);
-  connect(_pkmnLevel, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   _pkmnExp     = new PkmnSpinBox(this, EXP);
-  connect(_pkmnExp, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
   _pkmnTrainer = new PkmnSpinBox(this, TRAINER);
-  connect(_pkmnTrainer, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
+  _pkmnOTName = new PkmnLineEdit(this, OTNAME);
+  _pkmnOTName -> setMaxLength(10);
   _hpev        = new PkmnSpinBox(this, HPEV);
   _attev       = new PkmnSpinBox(this, ATTEV);
   _defev       = new PkmnSpinBox(this, DEFEV);
   _spdev       = new PkmnSpinBox(this, SPDEV);
   _spcev       = new PkmnSpinBox(this, SPCEV);
-  connect(_hpev, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-  connect(_attev, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-  connect(_defev, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-  connect(_spdev, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-  connect(_spcev, SIGNAL(valueChanged(int,int)),
-          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   _ivhp        = new PkmnSpinBox(this, IV | HP);
   _ivatt       = new PkmnSpinBox(this, IV | ATT);
   _ivdef       = new PkmnSpinBox(this, IV | DEF);
@@ -55,6 +62,71 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
   _ivdef -> setMaximum(15);
   _ivspd -> setMaximum(15);
   _ivspc -> setMaximum(15);
+  _hp          = new PkmnSpinBox(this, HP);
+  _maxhp       = new PkmnSpinBox(this, MAXHP);
+  _att         = new PkmnSpinBox(this, ATT);
+  _def         = new PkmnSpinBox(this, DEF);
+  _spd         = new PkmnSpinBox(this, SPD);
+  _spc         = new PkmnSpinBox(this, SPC);
+  _move1pp     = new PkmnSpinBox(this, MOVE1PP);
+  _move2pp     = new PkmnSpinBox(this, MOVE2PP);
+  _move3pp     = new PkmnSpinBox(this, MOVE3PP);
+  _move4pp     = new PkmnSpinBox(this, MOVE4PP);
+  _move1pp -> setMaximum(63);
+  _move2pp -> setMaximum(63);
+  _move3pp -> setMaximum(63);
+  _move4pp -> setMaximum(63);
+  _move1ppup   = new PkmnSpinBox(this, IV | MOVE1PP);
+  _move2ppup   = new PkmnSpinBox(this, IV | MOVE2PP);
+  _move3ppup   = new PkmnSpinBox(this, IV | MOVE3PP);
+  _move4ppup   = new PkmnSpinBox(this, IV | MOVE4PP);
+  _move1ppup -> setMaximum(3);
+  _move2ppup -> setMaximum(3);
+  _move3ppup -> setMaximum(3);
+  _move4ppup -> setMaximum(3);
+  _alimentPsn  = new PkmnCheckBox(this, ALIMENT, Aliment::POISONED);
+  _alimentSlp  = new PkmnCheckBox(this, ALIMENT, Aliment::ASLEEP);
+  _alimentBrn  = new PkmnCheckBox(this, ALIMENT, Aliment::BURNED);
+  _alimentFrz  = new PkmnCheckBox(this, ALIMENT, Aliment::FROZEN);
+  _alimentPrl  = new PkmnCheckBox(this, ALIMENT, Aliment::PARALYZED);
+  _alimentPsn -> setText(QString::fromStdString(Aliment::toString(Aliment::POISONED)));
+  _alimentSlp -> setText(QString::fromStdString(Aliment::toString(Aliment::ASLEEP)));
+  _alimentBrn -> setText(QString::fromStdString(Aliment::toString(Aliment::BURNED)));
+  _alimentFrz -> setText(QString::fromStdString(Aliment::toString(Aliment::FROZEN)));
+  _alimentPrl -> setText(QString::fromStdString(Aliment::toString(Aliment::PARALYZED)));
+  _move1       = new PkmnPushButton(this, MOVE1);
+  _move2       = new PkmnPushButton(this, MOVE2);
+  _move3       = new PkmnPushButton(this, MOVE3);
+  _move4       = new PkmnPushButton(this, MOVE4);
+  _species = new PkmnToolButton(this, SPECIES);
+  _species -> setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+  _species -> setFixedSize(scale*imgDim+20, scale*imgDim+40);
+  _species -> setIconSize(QSize(scale*imgDim, scale*imgDim));
+  _type1 = new PkmnElementComboBox(this, TYPE1);
+  _type2 = new PkmnElementComboBox(this, TYPE2);
+}
+
+void PkmnInfoView::connectWidgets() {
+  connect(_pkmnName, SIGNAL(valueChanged(int, const string &)),
+          this, SIGNAL(pkmnStrParamChangedEvent(int, const string &)));
+  connect(_pkmnLevel, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_pkmnExp, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_pkmnTrainer, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_pkmnOTName, SIGNAL(valueChanged(int, const string &)),
+          this, SIGNAL(pkmnStrParamChangedEvent(int, const string &)));
+  connect(_hpev, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_attev, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_defev, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_spdev, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_spcev, SIGNAL(valueChanged(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_ivhp, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_ivatt, SIGNAL(valueChanged(int,int)),
@@ -65,13 +137,6 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_ivspc, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
-  _hp          = new PkmnSpinBox(this, HP);
-  _maxhp       = new PkmnSpinBox(this, MAXHP);
-  _att         = new PkmnSpinBox(this, ATT);
-  _def         = new PkmnSpinBox(this, DEF);
-  _spd         = new PkmnSpinBox(this, SPD);
-  _spc         = new PkmnSpinBox(this, SPC);
   connect(_hp, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_maxhp, SIGNAL(valueChanged(int,int)),
@@ -84,15 +149,6 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_spc, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
-  _move1pp     = new PkmnSpinBox(this, MOVE1PP);
-  _move2pp     = new PkmnSpinBox(this, MOVE2PP);
-  _move3pp     = new PkmnSpinBox(this, MOVE3PP);
-  _move4pp     = new PkmnSpinBox(this, MOVE4PP);
-  _move1pp -> setMaximum(63);
-  _move2pp -> setMaximum(63);
-  _move3pp -> setMaximum(63);
-  _move4pp -> setMaximum(63);
   connect(_move1pp, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_move2pp, SIGNAL(valueChanged(int,int)),
@@ -101,15 +157,6 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_move4pp, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
-  _move1ppup   = new PkmnSpinBox(this, IV | MOVE1PP);
-  _move2ppup   = new PkmnSpinBox(this, IV | MOVE2PP);
-  _move3ppup   = new PkmnSpinBox(this, IV | MOVE3PP);
-  _move4ppup   = new PkmnSpinBox(this, IV | MOVE4PP);
-  _move1ppup -> setMaximum(3);
-  _move2ppup -> setMaximum(3);
-  _move3ppup -> setMaximum(3);
-  _move4ppup -> setMaximum(3);
   connect(_move1ppup, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_move2ppup, SIGNAL(valueChanged(int,int)),
@@ -118,17 +165,6 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_move4ppup, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
-  _alimentPsn  = new PkmnCheckBox(this, ALIMENT, Aliment::POISONED);
-  _alimentSlp  = new PkmnCheckBox(this, ALIMENT, Aliment::ASLEEP);
-  _alimentBrn  = new PkmnCheckBox(this, ALIMENT, Aliment::BURNED);
-  _alimentFrz  = new PkmnCheckBox(this, ALIMENT, Aliment::FROZEN);
-  _alimentPrl  = new PkmnCheckBox(this, ALIMENT, Aliment::PARALYZED);
-  _alimentPsn -> setText(QString::fromStdString(Aliment::toString(Aliment::POISONED)));
-  _alimentSlp -> setText(QString::fromStdString(Aliment::toString(Aliment::ASLEEP)));
-  _alimentBrn -> setText(QString::fromStdString(Aliment::toString(Aliment::BURNED)));
-  _alimentFrz -> setText(QString::fromStdString(Aliment::toString(Aliment::FROZEN)));
-  _alimentPrl -> setText(QString::fromStdString(Aliment::toString(Aliment::PARALYZED)));
   connect(_alimentPsn, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_alimentSlp, SIGNAL(valueChanged(int,int)),
@@ -139,11 +175,6 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
   connect(_alimentPrl, SIGNAL(valueChanged(int,int)),
           this, SIGNAL(pkmnParameterChangedEvent(int,int)));
-
-  _move1       = new PkmnPushButton(this, MOVE1);
-  _move2       = new PkmnPushButton(this, MOVE2);
-  _move3       = new PkmnPushButton(this, MOVE3);
-  _move4       = new PkmnPushButton(this, MOVE4);
   connect(_move1, SIGNAL(buttonClicked(int)),
           this, SIGNAL(moveChangeEvent(int)));
   connect(_move2, SIGNAL(buttonClicked(int)),
@@ -152,33 +183,12 @@ PkmnInfoView::PkmnInfoView (QWidget *parent) : QWidget(parent) {
           this, SIGNAL(moveChangeEvent(int)));
   connect(_move4, SIGNAL(buttonClicked(int)),
           this, SIGNAL(moveChangeEvent(int)));
-
-  _species = new PkmnToolButton(this, SPECIES);
-  _species -> setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-  _species -> setFixedSize(scale*imgDim+20, scale*imgDim+60);
-  _species -> setIconSize(QSize(scale*imgDim, scale*imgDim));
   connect(_species, SIGNAL(buttonClicked(int)),
           this, SIGNAL(speciesChangeEvent()));
-/*
-  QVBoxLayout *layout = new QVBoxLayout(this);
-  layout -> addLayout(organizeLayoutGeneralInfo());
-  layout -> addLayout(organizeLayoutStatistics());
-  layout -> addLayout(organizeLayoutMoves());
-  //layout -> addStretch(1);
-*/
-  QVBoxLayout *layout = new QVBoxLayout(this);
-  layout -> addLayout(organizeLayoutGeneralInfo());
-  QHBoxLayout *asd = new QHBoxLayout();
-  asd-> addLayout(organizeLayoutStatistics());
-  asd-> addWidget(_species);
-
-  layout -> addLayout(asd);
-  layout -> addLayout(organizeLayoutMoves());
-  layout -> addStretch(1);
-
-  updateInfo(PkmnState(NULL, NULL));
-  setLayout(layout);
-
+  connect(_type1, SIGNAL(elementSelected(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
+  connect(_type2, SIGNAL(elementSelected(int,int)),
+          this, SIGNAL(pkmnParameterChangedEvent(int,int)));
 }
 
 QLayout *PkmnInfoView::organizeLayoutGeneralInfo() {
@@ -188,7 +198,9 @@ QLayout *PkmnInfoView::organizeLayoutGeneralInfo() {
   result->addWidget(new QLabel("Nickname:",this), 0, 0, 1, 1, Qt::AlignRight);
   result->addWidget(_pkmnName, 0, 1, 1, 5);
   result->addWidget(new QLabel("Trainer:", this), 1, 0, 1, 1, Qt::AlignRight);
-  result->addWidget(_pkmnTrainer, 1, 1, 1, 5);
+  result->addWidget(_pkmnTrainer, 1, 1, 1, 1);
+  result->addWidget(new QLabel("OT Name:", this), 1, 2, 1, 1, Qt::AlignRight);
+  result->addWidget(_pkmnOTName, 1, 3, 1, 3);
   result->addWidget(new QLabel("Lvl:", this), 2, 0, 1, 1, Qt::AlignRight);
   result->addWidget(_pkmnLevel,   2, 1, 1, 1);
   result->addWidget(new QLabel("Exp:", this), 2, 2, 1, 1, Qt::AlignRight);
@@ -209,6 +221,24 @@ QLayout *PkmnInfoView::organizeLayoutGeneralInfo() {
   result->setColumnStretch(3, 1);
   result->setColumnStretch(4, 1);
   result->setColumnStretch(5, 1);
+
+  return result;
+
+}
+
+QLayout *PkmnInfoView::organizeLayoutSpecies() {
+
+  QVBoxLayout *result = new QVBoxLayout();
+
+  result -> addStretch(3);
+  result -> addWidget(new QLabel("Species", this), 0, Qt::AlignHCenter);
+  result -> addWidget(_species);
+  result -> addStretch(1);
+  result -> addWidget(new QLabel("Type 1", this), 0, Qt::AlignHCenter);
+  result -> addWidget(_type1);
+  result -> addWidget(new QLabel("Type 2", this), 0, Qt::AlignHCenter);
+  result -> addWidget(_type2);
+  result -> addStretch(3);
 
   return result;
 
@@ -289,6 +319,7 @@ void PkmnInfoView::updateInfo(const PkmnState info) {
 
   if (!info.isValid()) {
     _pkmnName    -> setText("---");
+    _pkmnOTName  -> setText("---");
     _pkmnLevel   -> setValue(1);
     _pkmnExp     -> setValue(1);
     _pkmnTrainer -> setValue(0);
@@ -328,12 +359,13 @@ void PkmnInfoView::updateInfo(const PkmnState info) {
     _species     -> setIcon(QPixmap(":/img/pokeballSprite.png")
                             .copy(0, 0, imgDim, imgDim)
                             .scaled(scale*imgDim, scale*imgDim));
-    QString speciesname = "---\n---/---";
+    QString speciesname = "---";
     _species     -> setText(speciesname);
 
-    setEnabled(false);
+    enableAuthorized(false);
   } else {
-    _pkmnName    -> setText(QString::fromStdString(info.getName()));
+    _pkmnName    -> setText(QString::fromStdString(info.getStr(PKMNNAME)));
+    _pkmnOTName  -> setText(QString::fromStdString(info.getStr(OTNAME)));
     _pkmnLevel   -> setValue(info.get(LEVEL));
     _pkmnExp     -> setValue(info.get(EXP));
     _pkmnTrainer -> setValue(info.get(TRAINER));
@@ -377,12 +409,35 @@ void PkmnInfoView::updateInfo(const PkmnState info) {
                                   imgDim,
                                   imgDim)
                             .scaled(scale*imgDim, scale*imgDim));
-    QString speciesname = QString::fromStdString(species->getName()) + "\n" +
-        QString::fromStdString(Element::toString(species->getElement1())) + "/" +
-        QString::fromStdString(Element::toString(species->getElement2()));
+    QString speciesname = QString::fromStdString(species->getName());
     _species     -> setText(speciesname);
+    _type1 -> setSelectedElement(info.get(TYPE1));
+    _type2 -> setSelectedElement(info.get(TYPE2));
 
-    setEnabled(true);
+    enableAuthorized(true);
+  }
+
+}
+
+void PkmnInfoView::setAuthorizationEnable(bool authorization) {
+  if (authorization == _fullEnable)
+    return;
+  _fullEnable = authorization;
+  enableAuthorized(this -> isEnabled());
+}
+
+void PkmnInfoView::enableAuthorized(bool enable) {
+
+  setEnabled(enable);
+
+  if (enable) {
+    _type1 -> setEnabled(_fullEnable);
+    _type2 -> setEnabled(_fullEnable);
+    _maxhp -> setEnabled(_fullEnable);
+    _att   -> setEnabled(_fullEnable);
+    _def   -> setEnabled(_fullEnable);
+    _spd   -> setEnabled(_fullEnable);
+    _spc   -> setEnabled(_fullEnable);
   }
 
 }

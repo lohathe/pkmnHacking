@@ -5,7 +5,9 @@
 using std::string;
 
 #include <QObject>
+#include <QAction>
 
+class PkmnSpeciesDescriptor;
 class PkmnSaveStateModel;
 class PkmnPartyView;
 
@@ -23,6 +25,8 @@ signals:
 
 public slots:
 
+  void manageEnableCoherency(bool);
+
   // SYNCHRONIZE THE VIEWS
   void managePartyPkmnSelected(int);
 
@@ -34,7 +38,7 @@ public slots:
 
   void managePkmnSpeciesSelected(int);
   void managePkmnMoveSelected(int);
-  void managePkmnNameChanged(const string &);
+  void managePkmnStrParamChanged(int, const string &);
   void managePkmnParameterChanged(int, int);
 
 private slots:
@@ -42,15 +46,19 @@ private slots:
 private:
 
   int _selectedPartyIndex;
-  bool _isCreatingPkmn;
-
-  bool _isChangingMove;
   int _selectedMoveIndex;
+
+  bool _isCreatingPkmn;
+  bool _isChangingMove;
+
+  bool _coherencyEnabled;
 
   PkmnSaveStateModel *_model;
   PkmnPartyView *_view;
 
   // UTILITY METHODS
+
+  const PkmnSpeciesDescriptor *getSelectedPkmnSpeciesDescriptor() const;
 
   void manageIVParameter(int, int);
   void manageHPParameter(int, int);

@@ -1,14 +1,14 @@
 #ifndef PKMN_PARTY_VIEW
 #define PKMN_PARTY_VIEW
 
+#include <QWidget>
+
 #include <string>
 using std::string;
 
-#include <QWidget>
-
 #include "pkmnspeciespickerview.h"
 #include "pkmnmovepickerview.h"
-#include "pkmnpartylistview.h"
+#include "pkmnlistview.h"
 #include "pkmninfoview.h"
 
 class PkmnSaveStateModel;
@@ -28,6 +28,8 @@ public:
   void displaySpeciesPicker();
   void displayMovePicker();
 
+  void setCoherencyEnabled(bool);
+
 signals:
 
   void partyPkmnSelectedEvent(int);
@@ -39,14 +41,14 @@ signals:
   void pkmnSpeciesSelectedEvent(int);
   void pkmnMoveChangeEvent(int);
   void pkmnMoveSelectedEvent(int);
-  void pkmnNameChangedEvent(const string &);
+  void pkmnStrParamChangedEvent(int, const string &);
   void pkmnParameterChangedEvent(int, int);
 
 public slots:
 
   void manageChangedPkmnPartyList();
   void manageChangedPkmnPartyInfo();
-  void managePkmnNameChanged(const string &);
+  void managePkmnStrParamChanged(int, const string &);
   void managePkmnParameterChanged(int, int);
   void managePkmnSpeciesChange();
   void managePkmnMoveChange(int);

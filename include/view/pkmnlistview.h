@@ -1,5 +1,5 @@
-#ifndef PKMN_PARTY_LIST_VIEW
-#define PKMN_PARTY_LIST_VIEW
+#ifndef PKMN_LIST_VIEW
+#define PKMN_LIST_VIEW
 
 #include <QWidget>
 
@@ -33,4 +33,4 @@ private:
 
 };
 
-#endif // PKMN_PARTY_LIST_VIEW
+#endif // PKMN_LIST_VIEW

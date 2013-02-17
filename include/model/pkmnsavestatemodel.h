@@ -21,6 +21,7 @@ public:
   PkmnSaveStateModel (PkmnSaveState*);
 
   bool saveToFile() const;
+  bool openFile(const string &);
 
   // GENERAL INFO
   int getTrainerId() const;
@@ -33,7 +34,7 @@ public:
   string getPartyPkmnName(int);
   PkmnState getPartyPkmnInfo(int) const;
   bool setPartyPkmnParameter(int, int, int);
-  bool setPartyPkmnName(int, string);
+  bool setPartyPkmnStrParam(int, int, const string &);
   
   bool createPartyPkmnAtIndex(int, int);
   bool deletePartyPkmnAtIndex(int);

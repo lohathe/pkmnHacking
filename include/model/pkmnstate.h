@@ -48,17 +48,18 @@ public:
   static int getOffset   (int);
   static int getInfoSize (int);
 
-  PkmnState(const byte*, const byte*);
+  PkmnState(const byte*, const byte*, const byte*);
 
   bool isValid() const;
 
   int get(int) const;
-  string getName() const;
+  string getStr(int) const;
 
 private:
 
   const byte *_data;
   const byte *_name;
+  const byte *_otname;
 
 };
 

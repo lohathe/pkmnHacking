@@ -38,7 +38,6 @@ private:
 
   int         _itemIndex;
   PkmnSpecies _pkmnInfo;
-  string      _pkmnNick;
 
   bool   _isSelected;
   bool   _isMouseOver;

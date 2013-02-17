@@ -6,11 +6,16 @@
 #include "pkmnsavestate.h"
 
 #include "pkmnsavestateview.h"
+#include "pkmnpartyview.h"
+#include "pkmnpokedexview.h"
 
 #include <string>
 using std::string;
 
+#include <QAction>
+#include <QActionGroup>
 #include <QFileDialog>
+#include <QToolBar>
 
 PkmnSaveStateController::PkmnSaveStateController (string filepath) {
 
@@ -33,6 +38,7 @@ PkmnSaveStateController::PkmnSaveStateController (string filepath) {
           _view, SLOT(manageOperationOutcome(bool,string)));
 
 
+  createActions();
   _view -> manageOperationOutcome(true, "Application started.");
 
 }
@@ -52,8 +58,56 @@ void PkmnSaveStateController::manageSaveToFile() {
 
 }
 
-void PkmnSaveStateController::manageOpenFile(string filepath) {
+void PkmnSaveStateController::manageOpenFile() {
 
-  filepath = filepath + "000";
+  QStringList fileNames = QFileDialog::getOpenFileNames(0, tr("Open File"),"./../",tr("PkmnYellow Save Files (*.sav)"));
+  if (fileNames.size() == 0)
+    return;
+  if (fileNames.size() > 1) {
+    emit operationOutcomeEvent(false,
+                               "Cannot open more than a file at time.");
+    return;
+  }
+  string filepath = fileNames[0].toStdString();
+
+  bool outcome = _model->openFile(filepath);
+  if (outcome)
+    emit operationOutcomeEvent(true,
+                               "Successfully opened the file.");
+  else
+    emit operationOutcomeEvent(false,
+                               "Some error while opening the file.");
+
+}
+
+void PkmnSaveStateController::createActions() {
+
+  QToolBar *toolBar = _view -> getMainToolBar();
+
+  QAction *openFile = new QAction(QIcon::fromTheme("document-open"), "Open", this);
+  connect(openFile, SIGNAL(triggered()), this, SLOT(manageOpenFile()));
+  QAction *saveToFile = new QAction(QIcon::fromTheme("document-save"), "Save", this);
+  connect(saveToFile, SIGNAL(triggered()), this, SLOT(manageSaveToFile()));
+
+  QActionGroup *showGroup = new QActionGroup(this);
+  QAction *showParty = new QAction(QIcon(":/img/pokeballSprite.png"), "Party Pokemon", showGroup);
+  connect(showParty, SIGNAL(toggled(bool)), _view->getPartyView(), SLOT(setVisible(bool)));
+  showParty->setCheckable(true);
+  QAction *showPokedex = new QAction(QIcon(":/img/pokeballSprite.png"), "Pokedex", showGroup);
+  connect(showPokedex, SIGNAL(toggled(bool)), _view->getPokedexView(), SLOT(setVisible(bool)));
+  showPokedex->setCheckable(true);
+
+  QAction *enableCoherency = new QAction(QIcon::fromTheme("insert-link"), "Enable Game Coherency", this);
+  connect(enableCoherency, SIGNAL(toggled(bool)), _partyController, SLOT(manageEnableCoherency(bool)));
+  enableCoherency->setCheckable(true);
+  enableCoherency->setChecked(true);
+
+  toolBar -> addAction(openFile);
+  toolBar -> addAction(saveToFile);
+  toolBar -> addSeparator();
+  toolBar -> addAction(showParty);
+  toolBar -> addAction(showPokedex);
+  toolBar -> addSeparator();
+  toolBar -> addAction(enableCoherency);
 
 }

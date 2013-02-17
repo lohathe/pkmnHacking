@@ -1,4 +1,4 @@
-#include "pkmnpartylistview.h"
+#include "pkmnlistview.h"
 #include "pkmnspecies.h"
 
 #include <QVBoxLayout>

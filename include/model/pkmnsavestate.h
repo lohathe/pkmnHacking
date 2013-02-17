@@ -19,6 +19,7 @@ public:
 
   // GENERAL INFO
   bool saveToFile() const;
+  bool openFile(const string &);
 
   int getTrainerId() const;
 
@@ -30,7 +31,7 @@ public:
   string getPartyPkmnName(int) const;
   PkmnState getPartyPkmnState(int) const;
   bool setPartyPkmnParameter(int, int, int);
-  bool setPartyPkmnName(int, string);
+  bool setPartyPkmnStrParam(int, int, string);
 
   bool createPartyPkmnAtIndex(int, int);
   bool deletePartyPkmnAtIndex(int);
@@ -45,16 +46,17 @@ private:
   string _filepath;
   byte *_data;
   int _dataLength;
-
+  bool _backup;
+/*
   static const int ORIGINAL_TRAINER_NAME_OFFSET = 0x2590;
   static const int ORIGINAL_TRAINER_ID_OFFSET   = 0x2605;
   static const int NEMESIS_TRAINER_NAME_OFFSET  = 0x25F6;
   static const int MONEY_OFFSET                 = 0x25F3;
   //static const int BADGES_OFFSET                = 0x0000;
-
+*/
   static const int POKEDEX_PKMN_CATCH_OFFSET    = 0x25A3;
   static const int POKEDEX_PKMN_SEEN_OFFSET     = 0x25B6;
-
+/*
   static const int PARTY_PKMN_COUNT_OFFSET      = 0x2F2C;
   static const int PARTY_PKMN_SPECIES_OFFSET    = 0x2F2D;
   static const int PARTY_PKMN_STATE_OFFSET      = 0x2F34;
@@ -75,12 +77,11 @@ private:
   static const int BOX_PKMN_OT_NAME_OFFSET   = 0x470C;
   static const int BOX_PKMN_NAME_OFFSET      = 0x47E8;
 
-  //48c5
-
   static const int CHECKSUM_OFFSET              = 0x3523;
-
+*/
   byte checksum () const;
   bool pkmnExistsAtPartyIndex (int) const;
+  int readData(int, int) const;
 
 };
 

@@ -33,7 +33,6 @@ HEADERS += include/controller/pkmnpartycontroller.h \
            include/model/pkmnstringreader.h \
            include/model/pkmntype.h \
            include/view/pkmnmovepickerview.h \
-           include/view/pkmnpartylistview.h \
            include/view/pkmnpartyview.h \
            include/view/pkmnsavestateview.h \
            include/view/pkmnspeciespickerview.h \
@@ -48,7 +47,8 @@ HEADERS += include/controller/pkmnpartycontroller.h \
     include/model/pkmnspeciesdescriptor.h \
     include/view/pkmnspeciesdescriptorview.h \
     include/model/pkmncomputevaluesutility.h \
-    include/model/pkmnoffsetmanager.h
+    include/model/pkmnoffsetmanager.h \
+    include/view/pkmnlistview.h
 SOURCES += src/main.cpp \
            src/controller/pkmnpartycontroller.cpp \
            src/controller/pkmnsavestatecontroller.cpp \
@@ -59,7 +59,6 @@ SOURCES += src/main.cpp \
            src/model/pkmnstate.cpp \
            src/model/pkmnstringreader.cpp \
            src/view/pkmnmovepickerview.cpp \
-           src/view/pkmnpartylistview.cpp \
            src/view/pkmnpartyview.cpp \
            src/view/pkmnsavestateview.cpp \
            src/view/pkmnspeciespickerview.cpp \
@@ -74,6 +73,7 @@ SOURCES += src/main.cpp \
     src/model/pkmnspeciesdescriptor.cpp \
     src/view/pkmnspeciesdescriptorview.cpp \
     src/model/pkmncomputevaluesutility.cpp \
-    src/model/pkmnoffsetmanager.cpp
+    src/model/pkmnoffsetmanager.cpp \
+    src/view/pkmnlistview.cpp
 RESOURCES += pkmnhacking.qrc
 #DISTFILES += img/pkmndescriptor

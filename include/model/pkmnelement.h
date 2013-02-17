@@ -27,6 +27,27 @@ public:
   static const byte ICE      = 0x19;
   static const byte DRAGON   = 0x1A;
 
+  static byte fromString(const string &e) {
+    string element = e;
+    std::transform(element.begin(), element.end(), element.begin(), ::tolower);
+    if (element == "normal") return Element::NORMAL;
+    else if (element == "fighting") return Element::FIGHTING;
+    else if (element == "flying") return Element::FLYING;
+    else if (element == "poison") return Element::POISON;
+    else if (element == "ground") return Element::GROUND;
+    else if (element == "rock") return Element::ROCK;
+    else if (element == "bug") return Element::BUG;
+    else if (element == "ghost") return Element::GHOST;
+    else if (element == "fire") return Element::FIRE;
+    else if (element == "water") return Element::WATER;
+    else if (element == "grass") return Element::GRASS;
+    else if (element == "electric") return Element::ELECTRIC;
+    else if (element == "psychic") return Element::PSYCHIC;
+    else if (element == "ice") return Element::ICE;
+    else if (element == "dragon") return Element::DRAGON;
+    return Element::NORMAL;
+  }
+
   static string toString(const byte element) {
     switch(element) {
       case Element::NORMAL   : return "normal";

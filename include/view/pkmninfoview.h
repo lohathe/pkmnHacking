@@ -3,6 +3,7 @@
 
 #include "pkmnstate.h"
 #include "pkmnwidget.h"
+#include "pkmnelementpickerview.h"
 
 #include <string>
 using std::string;
@@ -23,20 +24,23 @@ public:
   PkmnInfoView (QWidget *);
 
   void updateInfo(const PkmnState);
+  void setAuthorizationEnable(bool);
 
 signals:
 
   void moveChangeEvent(int);
   void speciesChangeEvent();
   void pkmnParameterChangedEvent(int, int);
-  void pkmnNameChangedEvent(const string &);
+  void pkmnStrParamChangedEvent(int, const string &);
 
 private:
 
   int scale;
   int imgDim;
+  bool _fullEnable;
 
-  PkmnLineEdit *_pkmnName;
+  PkmnLineEdit *_pkmnName,
+               *_pkmnOTName;
   PkmnSpinBox  *_pkmnLevel,
                *_pkmnExp,
                *_pkmnTrainer,
@@ -74,8 +78,14 @@ private:
                *_move3,
                *_move4;
   PkmnToolButton *_species;
+  PkmnElementComboBox *_type1,
+                    *_type2;
 
+  void initializeWidgets();
+  void connectWidgets();
+  void enableAuthorized(bool);
   QLayout *organizeLayoutGeneralInfo();
+  QLayout *organizeLayoutSpecies();
   QLayout *organizeLayoutStatistics();
   QLayout *organizeLayoutMoves();
 

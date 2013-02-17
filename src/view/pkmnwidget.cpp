@@ -31,7 +31,7 @@ PkmnLineEdit::PkmnLineEdit (QWidget *parent, int referredInfo) :
 }
 
 void PkmnLineEdit::manageEditingFinished() {
-  emit valueChanged(text().toStdString());
+  emit valueChanged(_referredInfo, text().toStdString());
 }
 
 // PKMN_CHECK_BOX

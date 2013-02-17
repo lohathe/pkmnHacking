@@ -17,6 +17,10 @@ string PkmnStringReader::toStdString(const byte *name) {
       result.push_back('M');
     else if (readChar == 0xF5)
       result.push_back('F');
+/*    else if (readChar == 0xAE)
+      result.push_back(0x0B);
+    else if (readChar == 0xF5)
+      result.push_back(0x0C);*/
     else
       result.push_back('.');
   }

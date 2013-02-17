@@ -9,8 +9,8 @@
 
 PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
                                           PkmnPartyView *view) :
-  _selectedPartyIndex(0), _isCreatingPkmn(false), _isChangingMove(false),
-  _selectedMoveIndex(0), _model(model), _view(view) {
+  _selectedPartyIndex(0), _selectedMoveIndex(0), _isCreatingPkmn(false),
+  _isChangingMove(false), _coherencyEnabled(true), _model(model), _view(view) {
 
   connect(_view, SIGNAL(partyPkmnSelectedEvent(int)),
           this,  SLOT(managePartyPkmnSelected(int)));
@@ -22,8 +22,8 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
           this,  SLOT(manageSpeciesChange()));
   connect(_view, SIGNAL(pkmnSpeciesSelectedEvent(int)),
           this,  SLOT(managePkmnSpeciesSelected(int)));
-  connect(_view, SIGNAL(pkmnNameChangedEvent(string)),
-          this,  SLOT(managePkmnNameChanged(string)));
+  connect(_view, SIGNAL(pkmnStrParamChangedEvent(int, const string&)),
+          this,  SLOT(managePkmnStrParamChanged(int, const string&)));
   connect(_view, SIGNAL(pkmnParameterChangedEvent(int,int)),
           this,  SLOT(managePkmnParameterChanged(int,int)));
   connect(_view, SIGNAL(pkmnMoveChangeEvent(int)),
@@ -34,6 +34,14 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
   // ACTIVATE VIEW
   _view -> connectModel(model);
   _view -> manageChangedPkmnPartyList();
+
+}
+
+void PkmnPartyController::manageEnableCoherency(bool enabled) {
+
+  _coherencyEnabled = enabled;
+  _view -> setCoherencyEnabled(enabled);
+  //_view -> displayPkmnInfo();
 
 }
 
@@ -155,7 +163,8 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
     managePkmnParameterChanged(SPECIES, selectedSpecies);
   }
 
-  if (outcome /* && GAMECOHERENCE */) setPartyPkmnBasicStats(_selectedPartyIndex);
+  if (outcome && _coherencyEnabled)
+    setPartyPkmnBasicStats(_selectedPartyIndex);
 
   _isChangingMove = false;
   _view -> setSelectedPartyPkmn(_selectedPartyIndex);
@@ -180,18 +189,22 @@ void PkmnPartyController::managePkmnMoveSelected(int selectedMove) {
 
 }
 
-void PkmnPartyController::managePkmnNameChanged(const string &newName) {
+void PkmnPartyController::managePkmnStrParamChanged(int info, const string &newName) {
 
   if (newName.size() > 10) {
     emit operationOutcomeEvent(false,
                                "Pokemon nickname cannot have more than 10 characters.");
     return;
   }
-  _model -> setPartyPkmnName(_selectedPartyIndex, newName);
+  _model -> setPartyPkmnStrParam(_selectedPartyIndex, info, newName);
 
 }
 
 void PkmnPartyController::managePkmnParameterChanged(int parameter, int newValue) {
+
+  if (_coherencyEnabled &&
+      (parameter & (MAXHP | ATT | DEF | SPD | SPC | TYPE1 | TYPE2)))
+    return;
 
   if (parameter & IV)
     manageIVParameter(parameter, newValue);
@@ -213,6 +226,7 @@ void PkmnPartyController::managePkmnParameterChanged(int parameter, int newValue
 }
 
 void PkmnPartyController::manageIVParameter(int parameter, int newValue) {
+
   if (parameter & (MOVE1PP | MOVE2PP | MOVE3PP | MOVE4PP)) {
 
     if (newValue < 0 || newValue > 3) {
@@ -274,10 +288,19 @@ void PkmnPartyController::manageHPParameter(int parameter, int newValue) {
 
 }
 
-void PkmnPartyController::manageLvlParameter(int parameter, int newValue) {
+void PkmnPartyController::manageLvlParameter(int, int newValue) {
 
   // Synchronize level and experience
-  _model -> setPartyPkmnParameter(_selectedPartyIndex, parameter, newValue);
+  if (_coherencyEnabled) {
+    const PkmnSpeciesDescriptor *descriptor = getSelectedPkmnSpeciesDescriptor();
+    int expPrev = PkmnComputeValuesUtility::computeExpForLevel(descriptor, newValue);
+    int expNext = PkmnComputeValuesUtility::computeExpForLevel(descriptor, newValue+1);
+    int exp = _model -> getPartyPkmnParameter(_selectedPartyIndex, EXP);
+    if (exp < expPrev || exp >= expNext)
+      _model -> setPartyPkmnParameter(_selectedPartyIndex, EXP, expPrev);
+  }
+  _model -> setPartyPkmnParameter(_selectedPartyIndex, LEVEL, newValue);
+  _model -> setPartyPkmnParameter(_selectedPartyIndex, LEVELN, newValue);
 
 }
 
@@ -290,10 +313,12 @@ void PkmnPartyController::manageSpeciesParameter(int, int newValue) {
     return;
   }
 
-  _model -> setPartyPkmnName(_selectedPartyIndex, pkmn->getUpperCaseName());
+  _model -> setPartyPkmnStrParam(_selectedPartyIndex, PKMNNAME, pkmn->getUpperCaseName());
   _model -> setPartyPkmnParameter(_selectedPartyIndex, SPECIES, pkmn->getId());
-  _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE1, pkmn->getElement1());
-  _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE2, pkmn->getElement2());
+  if (_coherencyEnabled) {
+    _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE1, pkmn->getElement1());
+    _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE2, pkmn->getElement2());
+  }
 
 }
 
@@ -396,5 +421,15 @@ void PkmnPartyController::setPartyPkmnBasicStats(int partyIndex) {
     _model->setPartyPkmnParameter (partyIndex, infoMove, 0);
     _model->setPartyPkmnParameter (partyIndex, infoPP, 0);
   }
+
+}
+
+const PkmnSpeciesDescriptor *PkmnPartyController::getSelectedPkmnSpeciesDescriptor() const {
+
+  const PkmnState pkmn = _model->getPartyPkmnInfo(_selectedPartyIndex);
+  const PkmnSpecies *species = PkmnSpeciesList::getById(pkmn.get(SPECIES));
+  const PkmnSpeciesDescriptor *descriptor =
+      PkmnSpeciesDescriptorList::get(species->getIndex());
+  return descriptor;
 
 }
