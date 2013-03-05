@@ -8,7 +8,7 @@ PkmnPartyListView::PkmnPartyListView(QWidget *parent) : QWidget(parent) {
   QVBoxLayout *layout = new QVBoxLayout (this);
 
   for (int i=0; i<6; ++i) {
-    _activePkmnList[i] = new PkmnSpeciesListItem(this, i+1);
+    _activePkmnList[i] = new PkmnSpeciesListItemLarge(this, i+1);
     _activePkmnList[i] -> setSelected(false);
 
     connect(_activePkmnList[i], SIGNAL(pkmnSelected(int)),

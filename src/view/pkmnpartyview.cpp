@@ -24,7 +24,7 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   connect(_partyList, SIGNAL(selectPkmnEvent(int)),
           this,       SIGNAL(partyPkmnSelectedEvent(int)));
 
-  _pkmnInfo = new PkmnInfoView(this);
+  _pkmnInfo = new PkmnInfoViewParty(this);
   connect(_pkmnInfo, SIGNAL(pkmnStrParamChangedEvent(int, const string &)),
           this,      SLOT(managePkmnStrParamChanged(int, const string &)));
   connect(_pkmnInfo, SIGNAL(pkmnParameterChangedEvent(int,int)),
@@ -83,7 +83,9 @@ void PkmnPartyView::displayPkmnInfo() {
   if (_selectedPartyPkmn == 0)
     _pkmnInfo -> updateInfo (PkmnState(NULL, NULL, NULL));
   else {
+    _disableUpdate = true;
     _pkmnInfo -> updateInfo (_model -> getPartyPkmnInfo(_selectedPartyPkmn));
+    _disableUpdate = false;
   }
 
   _speciesPicker -> setVisible(false);

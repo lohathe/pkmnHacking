@@ -17,26 +17,6 @@ PkmnInfoView::PkmnInfoView (QWidget *parent)
   scale = 2;
   imgDim = 56;
 
-  initializeWidgets();
-  connectWidgets();
-
-  QVBoxLayout *middleV = new QVBoxLayout();
-  middleV -> addLayout(organizeLayoutStatistics());
-  middleV -> addLayout(organizeLayoutMoves());
-
-  QHBoxLayout *middleH = new QHBoxLayout();
-  middleH -> addLayout(middleV);
-  middleH -> addSpacing(20);
-  middleH -> addLayout(organizeLayoutSpecies());
-
-  QVBoxLayout *layout = new QVBoxLayout(this);
-  layout -> addLayout(organizeLayoutGeneralInfo());
-  layout -> addLayout(middleH);
-  layout -> addStretch(1);
-
-  updateInfo(PkmnState(NULL, NULL, NULL));
-  setLayout(layout);
-
 }
 
 void PkmnInfoView::initializeWidgets() {
@@ -426,7 +406,31 @@ void PkmnInfoView::setAuthorizationEnable(bool authorization) {
   enableAuthorized(this -> isEnabled());
 }
 
-void PkmnInfoView::enableAuthorized(bool enable) {
+
+PkmnInfoViewParty::PkmnInfoViewParty (QWidget *parent) : PkmnInfoView(parent) {
+
+  initializeWidgets();
+  connectWidgets();
+
+  QVBoxLayout *middleV = new QVBoxLayout();
+  middleV -> addLayout(organizeLayoutStatistics());
+  middleV -> addLayout(organizeLayoutMoves());
+
+  QHBoxLayout *middleH = new QHBoxLayout();
+  middleH -> addLayout(middleV);
+  middleH -> addSpacing(20);
+  middleH -> addLayout(organizeLayoutSpecies());
+
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout -> addLayout(organizeLayoutGeneralInfo());
+  layout -> addLayout(middleH);
+  layout -> addStretch(1);
+
+  updateInfo(PkmnState(NULL, NULL, NULL));
+  setLayout(layout);
+
+}
+void PkmnInfoViewParty::enableAuthorized(bool enable) {
 
   setEnabled(enable);
 
@@ -439,5 +443,62 @@ void PkmnInfoView::enableAuthorized(bool enable) {
     _spd   -> setEnabled(_fullEnable);
     _spc   -> setEnabled(_fullEnable);
   }
+
+}
+
+PkmnInfoViewBox::PkmnInfoViewBox(QWidget *parent) : PkmnInfoView(parent) {
+
+  initializeWidgets();
+  connectWidgets();
+
+  QHBoxLayout *upperH = new QHBoxLayout();
+  upperH -> addStretch(1);
+  upperH -> addLayout(organizeLayoutSpecies());
+  upperH -> addLayout(organizeLayoutGeneralInfo());
+  upperH -> addStretch(1);
+
+  QHBoxLayout *lowerH = new QHBoxLayout();
+  lowerH -> addLayout(organizeLayoutStatistics());
+  lowerH -> addLayout(organizeLayoutMoves());
+
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  layout -> addLayout(upperH);
+  layout -> addLayout(lowerH);
+  layout -> addStretch(1);
+
+  updateInfo(PkmnState(NULL, NULL, NULL));
+  setLayout(layout);
+
+}
+void PkmnInfoViewBox::enableAuthorized(bool enable) {
+
+  setEnabled(enable);
+
+  if (enable) {
+    _type1 -> setEnabled(_fullEnable);
+    _type2 -> setEnabled(_fullEnable);
+  }
+  _maxhp -> setEnabled(false);
+  _att   -> setEnabled(false);
+  _def   -> setEnabled(false);
+  _spd   -> setEnabled(false);
+  _spc   -> setEnabled(false);
+
+}
+QLayout *PkmnInfoViewBox::organizeLayoutSpecies() {
+
+  QVBoxLayout *rightV = new QVBoxLayout();
+  rightV -> addStretch(1);
+  rightV -> addWidget(new QLabel("Type 1", this), 0, Qt::AlignHCenter);
+  rightV -> addWidget(_type1);
+  rightV -> addWidget(new QLabel("Type 2", this), 0, Qt::AlignHCenter);
+  rightV -> addWidget(_type2);
+  rightV -> addStretch(1);
+
+  QHBoxLayout *result = new QHBoxLayout();
+  result -> addWidget(_species);
+  result -> addLayout(rightV);
+
+  return result;
 
 }

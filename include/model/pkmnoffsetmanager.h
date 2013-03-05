@@ -35,7 +35,7 @@ private:
   static int getPartyDataOffset(int);
   static int getBoxDataOffset(int);
 
-  static const int ORIGINAL_TRAINER_NAME_OFFSET = 0x2590;
+  static const int ORIGINAL_TRAINER_NAME_OFFSET = 0x2598;
   static const int ORIGINAL_TRAINER_ID_OFFSET   = 0x2605;
   static const int NEMESIS_TRAINER_NAME_OFFSET  = 0x25F6;
   static const int MONEY_OFFSET                 = 0x25F3;

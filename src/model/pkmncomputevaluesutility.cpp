@@ -22,6 +22,8 @@ int PkmnComputeValuesUtility::computeExpForLevel(
     result = (5*level*level*level)/4;
   }
 
+  if (result < 1) result = 1;
+
   return result;
 
 }

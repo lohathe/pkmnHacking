@@ -6,12 +6,13 @@
 
 // PKMN SPECIES LIST ITEM
 
-PkmnSpeciesListItem::PkmnSpeciesListItem(QWidget *parent, int index) :
-  QWidget(parent), _itemIndex(index), _isSelected(false), _isMouseOver(false) {
-
-  this -> setFixedSize(200, 60);
-
-}
+PkmnSpeciesListItem::PkmnSpeciesListItem(
+    QWidget *parent,
+    int index) :
+  QWidget(parent),
+  _itemIndex(index),
+  _isSelected(false),
+  _isMouseOver(false) {}
 
 void PkmnSpeciesListItem::updateItem(const PkmnSpecies *pkmnInfo) {
 
@@ -46,7 +47,15 @@ void PkmnSpeciesListItem::leaveEvent (QEvent *) {
   update();
 }
 
-void PkmnSpeciesListItem::paintEvent ( QPaintEvent *) {
+PkmnSpeciesListItemLarge::PkmnSpeciesListItemLarge (
+    QWidget *parent,
+    int index) : PkmnSpeciesListItem(parent, index) {
+
+  this -> setFixedSize(200, 60);
+
+}
+
+void PkmnSpeciesListItemLarge::paintEvent ( QPaintEvent *) {
 
   QPainter p (this);
 
@@ -75,6 +84,47 @@ void PkmnSpeciesListItem::paintEvent ( QPaintEvent *) {
   }
 
 }
+
+
+PkmnSpeciesListItemSmall::PkmnSpeciesListItemSmall (
+    QWidget *parent,
+    int index) : PkmnSpeciesListItem(parent, index) {
+
+  this -> setFixedSize(60, 60);
+
+}
+
+void PkmnSpeciesListItemSmall::paintEvent ( QPaintEvent *) {
+
+  QPainter p (this);
+  p.setRenderHint(QPainter::Antialiasing, true);
+  QBrush background(Qt::lightGray);
+  QPen border(QColor(40, 40, 40));
+  border.setWidth(2);
+
+  if (_isMouseOver && !_isSelected) {
+    background.setColor(QColor(200, 200, 160));
+  }
+  if (_isSelected) {
+    background.setColor(QColor(255, 255, 200));
+  }
+  p.setBrush(background);
+  p.setPen(border);
+  //p.drawRoundedRect(2, 2, 56, 56, 10, 10);
+  p.drawEllipse(2, 2, 56, 56);
+
+  if (_pkmnInfo.isValid()) {
+    p.drawPixmap (2, 2,
+                  QPixmap(":/img/spritesyellowcolor.png")
+                    .copy(1+57*((_pkmnInfo.getIndex()-1)%12),
+                          1+57*((_pkmnInfo.getIndex()-1)/12),
+                          56, 56));
+  } else {
+    p.drawPixmap (2, 2, QPixmap(":/img/pokeballSprite.png"));
+  }
+
+}
+
 
 // PKMN MOVE LIST ITEM
 
@@ -118,7 +168,7 @@ void PkmnMoveListItem::paintEvent (QPaintEvent *) {
     p.fillRect(0, 0, width(), height(), QColor(200, 200, 200));
   }
 
-  p.drawText(5,   20, QString::number(_pkmnMove.getId()) + " " + QString::fromStdString(_pkmnMove.getName()));
+  p.drawText(5,   20, /*QString::number(_pkmnMove.getId()) + " " +*/ QString::fromStdString(_pkmnMove.getName()));
   p.drawText(285, 20, "(" + QString::fromStdString(Element::toString(_pkmnMove.getElement())) + ")");
   p.drawText(405, 20, QString::number(_pkmnMove.getPwr()));
   p.drawText(455, 20, QString::number(_pkmnMove.getPP()));

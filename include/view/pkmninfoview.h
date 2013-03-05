@@ -33,7 +33,7 @@ signals:
   void pkmnParameterChangedEvent(int, int);
   void pkmnStrParamChangedEvent(int, const string &);
 
-private:
+protected:
 
   int scale;
   int imgDim;
@@ -83,12 +83,41 @@ private:
 
   void initializeWidgets();
   void connectWidgets();
-  void enableAuthorized(bool);
-  QLayout *organizeLayoutGeneralInfo();
-  QLayout *organizeLayoutSpecies();
-  QLayout *organizeLayoutStatistics();
-  QLayout *organizeLayoutMoves();
+
+  virtual void enableAuthorized(bool) = 0;
+
+  virtual QLayout *organizeLayoutGeneralInfo();
+  virtual QLayout *organizeLayoutSpecies();
+  virtual QLayout *organizeLayoutStatistics();
+  virtual QLayout *organizeLayoutMoves();
 
 };
+
+class PkmnInfoViewParty : public PkmnInfoView {
+
+  Q_OBJECT
+
+public:
+  PkmnInfoViewParty (QWidget *);
+
+protected:
+  virtual void enableAuthorized(bool);
+
+};
+
+class PkmnInfoViewBox : public PkmnInfoView {
+
+  Q_OBJECT
+
+public:
+
+  PkmnInfoViewBox (QWidget *);
+
+protected:
+  virtual void enableAuthorized(bool);
+  virtual QLayout *organizeLayoutSpecies();
+
+};
+
 
 #endif // PKMN_INFO_VIEW

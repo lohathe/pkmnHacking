@@ -159,9 +159,10 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
       emit operationOutcomeEvent(true,
                                  "Successfully created specified pokemon in party");
     }
-  } else {
-    managePkmnParameterChanged(SPECIES, selectedSpecies);
-  }
+  }// else {
+
+  managePkmnParameterChanged(SPECIES, selectedSpecies);
+  //}
 
   if (outcome && _coherencyEnabled)
     setPartyPkmnBasicStats(_selectedPartyIndex);
@@ -291,7 +292,7 @@ void PkmnPartyController::manageHPParameter(int parameter, int newValue) {
 void PkmnPartyController::manageLvlParameter(int, int newValue) {
 
   // Synchronize level and experience
-  if (_coherencyEnabled) {
+  if (_coherencyEnabled && _selectedPartyIndex != 0) {
     const PkmnSpeciesDescriptor *descriptor = getSelectedPkmnSpeciesDescriptor();
     int expPrev = PkmnComputeValuesUtility::computeExpForLevel(descriptor, newValue);
     int expNext = PkmnComputeValuesUtility::computeExpForLevel(descriptor, newValue+1);
@@ -315,10 +316,10 @@ void PkmnPartyController::manageSpeciesParameter(int, int newValue) {
 
   _model -> setPartyPkmnStrParam(_selectedPartyIndex, PKMNNAME, pkmn->getUpperCaseName());
   _model -> setPartyPkmnParameter(_selectedPartyIndex, SPECIES, pkmn->getId());
-  if (_coherencyEnabled) {
+  //if (_coherencyEnabled) {
     _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE1, pkmn->getElement1());
     _model -> setPartyPkmnParameter(_selectedPartyIndex, TYPE2, pkmn->getElement2());
-  }
+  //}
 
 }
 

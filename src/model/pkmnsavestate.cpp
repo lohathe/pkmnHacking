@@ -4,31 +4,13 @@
 
 #include <fstream>
 
+typedef PkmnOffsetManager POM;
+
 PkmnSaveState::PkmnSaveState (string filepath, bool backup)
-  : _data(NULL), _filepath(filepath), _backup(backup) {
+  : _filepath(filepath), _data(NULL), _backup(backup) {
 
   openFile(filepath);
-  /*
-  std::ifstream inputFile (_filepath.c_str(), std::ios::binary);
-  inputFile.seekg(0, std::ios::end);
 
-  _dataLength = inputFile.tellg();
-  _data = new byte[_dataLength];
-  
-  inputFile.seekg(0, std::ios::beg);
-  inputFile.read(reinterpret_cast<char *>(_data), _dataLength);
-  inputFile.close();
-
-  if (backup) {
-    
-    std::string backupFile = filepath + ".bak";
-    std::ofstream outputFile (backupFile.c_str(), std::ios::binary | std::ios::trunc);
-  
-    outputFile.seekp(0, std::ios::beg);
-    outputFile.write(reinterpret_cast<char *>(_data), _dataLength);
-    outputFile.close();
-  }
-  */
 }
 
 bool PkmnSaveState::saveToFile() const {
@@ -45,7 +27,8 @@ bool PkmnSaveState::saveToFile() const {
 
 }
 
-bool PkmnSaveState::openFile(const string &filepath) {
+bool PkmnSaveState::openFile(
+    const string &filepath) {
 
   std::ifstream inputFile;
   inputFile.open(filepath.c_str(), std::ios::binary);
@@ -111,7 +94,9 @@ int PkmnSaveState::getPartyPkmnCount() const {
 }
 
 // partyIndex in [1 .. 6]
-int PkmnSaveState::getPartyPkmnParameter(int partyIndex, int info) const {
+int PkmnSaveState::getPartyPkmnParameter(
+    int partyIndex,
+    int info) const {
 
   if (partyIndex > getPartyPkmnCount())
     return 0x00;
@@ -122,7 +107,8 @@ int PkmnSaveState::getPartyPkmnParameter(int partyIndex, int info) const {
 }
 
 // partyIndex in [1 .. 6]
-string PkmnSaveState::getPartyPkmnName(int partyIndex) const {
+string PkmnSaveState::getPartyPkmnName(
+    int partyIndex) const {
 
   if (partyIndex > getPartyPkmnCount())
     return "...";
@@ -133,7 +119,8 @@ string PkmnSaveState::getPartyPkmnName(int partyIndex) const {
 }
 
 // partyIndex in [1 .. 6]
-PkmnState PkmnSaveState::getPartyPkmnState(int partyIndex) const {
+PkmnState PkmnSaveState::getPartyPkmnState(
+    int partyIndex) const {
 
   if (!pkmnExistsAtPartyIndex(partyIndex))
     return PkmnState(NULL, NULL, NULL);
@@ -146,7 +133,10 @@ PkmnState PkmnSaveState::getPartyPkmnState(int partyIndex) const {
 }
 
 // partyIndex in [1 .. 6]
-bool PkmnSaveState::setPartyPkmnParameter(int partyIndex, int info, int value) {
+bool PkmnSaveState::setPartyPkmnParameter(
+    int partyIndex,
+    int info,
+    int value) {
 
   if (partyIndex > getPartyPkmnCount())
     return false;
@@ -175,7 +165,10 @@ bool PkmnSaveState::setPartyPkmnParameter(int partyIndex, int info, int value) {
 }
 // partyIndex in [1 .. 6]
 // info in [PKMNNAME, OTNAME]
-bool PkmnSaveState::setPartyPkmnStrParam(int partyIndex, int info, string value) {
+bool PkmnSaveState::setPartyPkmnStrParam(
+    int partyIndex,
+    int info,
+    string value) {
 
   if (partyIndex > getPartyPkmnCount())
     return false;
@@ -191,7 +184,9 @@ bool PkmnSaveState::setPartyPkmnStrParam(int partyIndex, int info, string value)
 }
 
 // partyIndex in [1 .. 6]
-bool PkmnSaveState::createPartyPkmnAtIndex(int partyIndex, int species) {
+bool PkmnSaveState::createPartyPkmnAtIndex(
+    int partyIndex,
+    int species) {
 
   // can create pokemon only if the previous (number-1) exist
   for (int i=1; i<partyIndex; i++)
@@ -211,7 +206,7 @@ bool PkmnSaveState::createPartyPkmnAtIndex(int partyIndex, int species) {
 
   // :: set default value for newly created pokemon ::
   setPartyPkmnStrParam (partyIndex, PKMNNAME, PkmnSpeciesList::getById(species)->getUpperCaseName());
-  setPartyPkmnStrParam (partyIndex, OTNAME,   "CACCA");
+  setPartyPkmnStrParam (partyIndex, OTNAME,   PkmnStringReader::toStdString(_data + POM::getOriginalTrainerNameOffset()));
   setPartyPkmnParameter(partyIndex, SPECIES,  species);
   setPartyPkmnParameter(partyIndex, LEVELN,   0x01);
   setPartyPkmnParameter(partyIndex, TRAINER,  getTrainerId());
@@ -223,7 +218,8 @@ bool PkmnSaveState::createPartyPkmnAtIndex(int partyIndex, int species) {
 }
 
 // number in [1 .. 6]
-bool PkmnSaveState::deletePartyPkmnAtIndex(int index) {
+bool PkmnSaveState::deletePartyPkmnAtIndex(
+    int index) {
 
   if (!pkmnExistsAtPartyIndex(index))
     return false;
@@ -285,7 +281,8 @@ byte PkmnSaveState::checksum () const {
 
 
 //  index in [1 .. 6]
-bool PkmnSaveState::pkmnExistsAtPartyIndex (int index) const {
+bool PkmnSaveState::pkmnExistsAtPartyIndex (
+    int index) const {
 
   if (index < 1 || index > 6) {
     return false;
@@ -298,6 +295,197 @@ bool PkmnSaveState::pkmnExistsAtPartyIndex (int index) const {
 
 }
 
+// BOX PKMN INFO
+// boxIndex in [1 .. 12]
+// pkmnIndex in [1 .. 20]
+vector<const PkmnSpecies *> PkmnSaveState::getBoxPkmnList(
+    int boxIndex) const {
+
+  vector<const PkmnSpecies *> result;
+
+  for (int i=0; i<20; ++i) {
+    int currentBoxNumber = readData(
+          PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+    int pkmnSpeciesAtIndex = readData(
+          PkmnOffsetManager::getBoxPkmnListOffset(boxIndex, i, currentBoxNumber), 1);
+    result.push_back(PkmnSpeciesList::getById(pkmnSpeciesAtIndex));
+  }
+
+  return result;
+
+}
+int PkmnSaveState::getBoxPkmnCount(
+    int boxIndex) const {
+
+  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+  return readData(PkmnOffsetManager::getBoxPkmnCountOffset(boxIndex, currentBoxIndex), 1);
+
+}
+
+int PkmnSaveState::getBoxPkmnParam(
+    int boxIndex,
+    int pkmnIndex,
+    int info) const {
+
+  if (pkmnIndex > getBoxPkmnCount(boxIndex))
+    return 0x00;
+
+  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+  return readData(PkmnOffsetManager::getBoxPkmnParameterOffset(boxIndex,
+                                                               pkmnIndex,
+                                                               info,
+                                                               currentBoxIndex),
+                  1);
+
+}
+string PkmnSaveState::getBoxPkmnStrParam(
+    int boxIndex,
+    int pkmnIndex,
+    int info) const {
+
+  if (pkmnIndex > getBoxPkmnCount(boxIndex))
+    return "...";
+  if (info != PKMNNAME && info != OTNAME)
+    return "...";
+
+  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+  return PkmnStringReader::toStdString(
+        _data + PkmnOffsetManager::getBoxPkmnParameterOffset(boxIndex,
+                                                             pkmnIndex,
+                                                             info,
+                                                             currentBoxIndex));
+
+}
+bool PkmnSaveState::setBoxPkmnParam(
+    int boxIndex,
+    int pkmnIndex,
+    int info,
+    int value) {
+
+  if (pkmnIndex > getBoxPkmnCount(boxIndex))
+    return false;
+
+  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+
+  if (info == SPECIES) {
+
+    _data[POM::getBoxPkmnListOffset(boxIndex, pkmnIndex, currentBoxIndex)] =
+        static_cast<byte>(value);
+    _data[POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, info, currentBoxIndex)] =
+        static_cast<byte>(value);
+
+  } else {
+
+    int infoOffset = POM::getBoxPkmnParameterOffset(boxIndex,
+                                                    pkmnIndex,
+                                                    info,
+                                                    currentBoxIndex);
+    for (int i = PkmnState::getInfoSize(info) - 1;
+         i >= 0;
+         --i) {
+      _data[infoOffset + i] = static_cast<byte>(value & 0xFF);
+      value = value>>8;
+    }
+
+  }
+
+  return true;
+
+}
+bool PkmnSaveState::setBoxPkmnStrParam(
+    int boxIndex,
+    int pkmnIndex,
+    int info,
+    string value) {
+
+  if (pkmnIndex > getBoxPkmnCount(boxIndex))
+    return false;
+
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  byte *name = PkmnStringReader::fromStdString(value);
+  int startingOffset =
+      POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, info, currentBox);
+      //PkmnOffsetManager::getPartyPkmnParameterOffset(partyIndex, info);
+  for (int i=0; i<11; ++i)
+    _data[startingOffset + i] = name[i];
+
+  delete[] name;
+  return true;
+
+}
+PkmnState PkmnSaveState::getBoxPkmnState(
+    int boxIndex,
+    int pkmnIndex) const {
+
+  if (!pkmnExistsAtBoxIndex(boxIndex, pkmnIndex))
+    return PkmnState(NULL, NULL, NULL);
+
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  return PkmnState(
+        _data + POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, SPECIES, currentBox),
+        _data + POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, PKMNNAME, currentBox),
+        _data + POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, OTNAME, currentBox));
+
+}
+
+bool PkmnSaveState::createBoxPkmnAtIndex(
+    int boxIndex,
+    int pkmnIndex,
+    int species) {
+
+  for (int i=0; i<pkmnIndex; ++i) {
+    if (!pkmnExistsAtBoxIndex(boxIndex, i))
+      return false;
+  }
+  if (pkmnExistsAtBoxIndex(boxIndex, pkmnIndex))
+    return false;
+
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  int pkmnBoxCount = readData(POM::getBoxPkmnCountOffset(boxIndex, currentBox), 1);
+  _data[POM::getBoxPkmnCountOffset(boxIndex, currentBox)] =
+      static_cast<byte>(pkmnBoxCount + 1);
+  _data[POM::getBoxPkmnListOffset(boxIndex, pkmnIndex, currentBox)] =
+      static_cast<byte>(species);
+  _data[POM::getBoxPkmnListOffset(boxIndex, pkmnIndex, currentBox) + 1] =
+      static_cast<byte>(0xFF);
+
+  setBoxPkmnStrParam(
+        boxIndex,
+        pkmnIndex,
+        PKMNNAME,
+        PkmnSpeciesList::getById(species)->getUpperCaseName());
+  setBoxPkmnStrParam(
+        boxIndex,
+        pkmnIndex,
+        OTNAME,
+        PkmnStringReader::toStdString(_data + POM::getOriginalTrainerNameOffset()));
+  setBoxPkmnParam(boxIndex, pkmnIndex, SPECIES,  species);
+  setBoxPkmnParam(boxIndex, pkmnIndex, LEVELN,   0x01);
+  setBoxPkmnParam(boxIndex, pkmnIndex, TRAINER,  getTrainerId());
+  setBoxPkmnParam(boxIndex, pkmnIndex, EXP,      0x01);
+
+  return true;
+
+}
+bool PkmnSaveState::deleteBoxPkmnAtIndex(int, int) {
+  return false;
+}
+
+bool PkmnSaveState::pkmnExistsAtBoxIndex (
+    int boxIndex,
+    int pkmnIndex) const {
+
+  if (pkmnIndex < 1 || pkmnIndex > 20) {
+    return false;
+  }
+
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  if (readData(POM::getBoxPkmnListOffset(boxIndex, pkmnIndex, currentBox), 1) == 0xFF) {
+    return false;
+  }
+  return true;
+
+}
 
 // POKEDEX INFO
 

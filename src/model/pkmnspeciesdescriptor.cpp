@@ -133,6 +133,13 @@ void PkmnSpeciesDescriptorList::initiazlizePkmnList() {
           index, evmethod, lvlspeed, hp, att, def, spd, spc, learnset);
 
   }
+/*
+  for (int i=0; i<152; ++i) {
+
+    if (PkmnSpeciesDescriptorList::get(i)->getLvlSpeed() == 4)
+      std::cout<<PkmnSpeciesList::getByIndex(PkmnSpeciesDescriptorList::get(i)->getIndex())->getName()<<std::endl;
+
+  }*/
 
 }
 

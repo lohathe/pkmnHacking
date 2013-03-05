@@ -48,7 +48,9 @@ HEADERS += include/controller/pkmnpartycontroller.h \
     include/view/pkmnspeciesdescriptorview.h \
     include/model/pkmncomputevaluesutility.h \
     include/model/pkmnoffsetmanager.h \
-    include/view/pkmnlistview.h
+    include/view/pkmnlistview.h \
+    include/controller/pkmnboxcontroller.h \
+    include/view/pkmnboxview.h
 SOURCES += src/main.cpp \
            src/controller/pkmnpartycontroller.cpp \
            src/controller/pkmnsavestatecontroller.cpp \
@@ -74,6 +76,8 @@ SOURCES += src/main.cpp \
     src/view/pkmnspeciesdescriptorview.cpp \
     src/model/pkmncomputevaluesutility.cpp \
     src/model/pkmnoffsetmanager.cpp \
-    src/view/pkmnlistview.cpp
+    src/view/pkmnlistview.cpp \
+    src/controller/pkmnboxcontroller.cpp \
+    src/view/pkmnboxview.cpp
 RESOURCES += pkmnhacking.qrc
 #DISTFILES += img/pkmndescriptor

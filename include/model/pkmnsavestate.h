@@ -36,6 +36,19 @@ public:
   bool createPartyPkmnAtIndex(int, int);
   bool deletePartyPkmnAtIndex(int);
   
+  // BOX PKMN INFO
+  vector<const PkmnSpecies *> getBoxPkmnList(int) const;
+  int getBoxPkmnCount(int) const;
+
+  int getBoxPkmnParam(int, int, int) const;
+  string getBoxPkmnStrParam(int, int, int) const;
+  bool setBoxPkmnParam(int, int, int, int);
+  bool setBoxPkmnStrParam(int, int, int, string);
+  PkmnState getBoxPkmnState(int, int) const;
+
+  bool createBoxPkmnAtIndex(int, int, int);
+  bool deleteBoxPkmnAtIndex(int, int);
+
   // POKEDEX PKMN INFO
   PkmnPokedex getPkmnPokedex() const;
   bool setPkmnPokedexSeen(int, bool);
@@ -81,6 +94,7 @@ private:
 */
   byte checksum () const;
   bool pkmnExistsAtPartyIndex (int) const;
+  bool pkmnExistsAtBoxIndex (int, int) const;
   int readData(int, int) const;
 
 };

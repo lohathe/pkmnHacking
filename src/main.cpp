@@ -9,6 +9,9 @@
 #include "pkmndataformat.h"
 #include <iostream>
 using namespace std;
+#include "pkmnspeciesdescriptor.h"
+#include "pkmnspecies.h"
+#include "pkmncomputevaluesutility.h"
 
 int main (int argc, char **argv) {
 /*
@@ -19,6 +22,15 @@ int main (int argc, char **argv) {
   cout<<endl;
   return 0;
 */
+
+/*
+  const PkmnSpeciesDescriptor *d = PkmnSpeciesDescriptorList::get(PkmnSpeciesList::getByName("Nidorino")->getIndex());
+  cout<<PkmnSpeciesList::getByIndex(d->getIndex())->getName()<<endl;
+  for (int i=0; i<20; ++i) {
+    cout<<"lvl "<<i<<") "<<PkmnComputeValuesUtility::computeExpForLevel(d, i)<<endl;
+  }
+*/
+
   QApplication app(argc, argv);
 
   new PkmnSaveStateController("/home/luca/Desktop/Saves/prova/pmyellow.sav");

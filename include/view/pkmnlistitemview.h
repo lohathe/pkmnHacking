@@ -29,18 +29,42 @@ signals:
 
 protected:
 
-  virtual void paintEvent (QPaintEvent *);
+  virtual void paintEvent (QPaintEvent *) = 0;
   virtual void mousePressEvent (QMouseEvent *);
   virtual void enterEvent (QEvent *);
   virtual void leaveEvent (QEvent *);
 
-private:
+//private:
 
   int         _itemIndex;
   PkmnSpecies _pkmnInfo;
 
   bool   _isSelected;
   bool   _isMouseOver;
+
+};
+
+class PkmnSpeciesListItemLarge : public PkmnSpeciesListItem {
+
+  Q_OBJECT
+
+public:
+  PkmnSpeciesListItemLarge(QWidget *,int);
+
+protected:
+  virtual void paintEvent (QPaintEvent *);
+
+};
+
+class PkmnSpeciesListItemSmall : public PkmnSpeciesListItem {
+
+  Q_OBJECT
+
+public:
+  PkmnSpeciesListItemSmall(QWidget *,int);
+
+protected:
+  virtual void paintEvent (QPaintEvent *);
 
 };
 
