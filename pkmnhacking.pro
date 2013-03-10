@@ -50,7 +50,8 @@ HEADERS += include/controller/pkmnpartycontroller.h \
     include/model/pkmnoffsetmanager.h \
     include/view/pkmnlistview.h \
     include/controller/pkmnboxcontroller.h \
-    include/view/pkmnboxview.h
+    include/view/pkmnboxview.h \
+    include/controller/pkmnparametercontroller.h
 SOURCES += src/main.cpp \
            src/controller/pkmnpartycontroller.cpp \
            src/controller/pkmnsavestatecontroller.cpp \
@@ -78,6 +79,7 @@ SOURCES += src/main.cpp \
     src/model/pkmnoffsetmanager.cpp \
     src/view/pkmnlistview.cpp \
     src/controller/pkmnboxcontroller.cpp \
-    src/view/pkmnboxview.cpp
+    src/view/pkmnboxview.cpp \
+    src/controller/pkmnparametercontroller.cpp
 RESOURCES += pkmnhacking.qrc
 #DISTFILES += img/pkmndescriptor

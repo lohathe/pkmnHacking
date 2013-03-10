@@ -3,25 +3,31 @@
 
 #include <QVBoxLayout>
 
-PkmnPartyListView::PkmnPartyListView(QWidget *parent) : QWidget(parent) {
+PkmnListView::PkmnListView(QWidget *parent)
+  : QWidget(parent) { }
 
-  QVBoxLayout *layout = new QVBoxLayout (this);
+void PkmnListView::initialize(
+    int orientation,
+    int lineNumber) {
 
-  for (int i=0; i<6; ++i) {
-    _activePkmnList[i] = new PkmnSpeciesListItemLarge(this, i+1);
-    _activePkmnList[i] -> setSelected(false);
+  QGridLayout *layout = new QGridLayout(this);
+  //layout -> addStretch(1);
+  int lineSize = _activePkmnList.size()/lineNumber;
+  for (int i=0; i<_activePkmnList.size(); ++i) {
 
-    connect(_activePkmnList[i], SIGNAL(pkmnSelected(int)),
-            this, SIGNAL(selectPkmnEvent(int)));
+    int x = i/lineSize;
+    int y = i%lineSize;
+    if (orientation == Qt::Horizontal)
+      layout -> addWidget(_activePkmnList[i], x, y, 1, 1);
+    else
+      layout -> addWidget(_activePkmnList[i], y, x, 1, 1);
 
-    layout -> addWidget (_activePkmnList[i]);
   }
-  layout -> addStretch (1);
-
+  //layout -> addStretch (1);
 
 }
 
-void PkmnPartyListView::setSelectedPartyPkmn(int index) {
+void PkmnListView::setSelectedPartyPkmn(int index) {
 
   for (int i = 0; i < 6; ++i) {
     _activePkmnList[i] -> setSelected(false);
@@ -31,7 +37,7 @@ void PkmnPartyListView::setSelectedPartyPkmn(int index) {
 
 }
 
-void PkmnPartyListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index) {
+void PkmnListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index) {
 
   if (index < 1 || index > 6) return;
 
@@ -39,7 +45,7 @@ void PkmnPartyListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index)
 
 }
 
-void PkmnPartyListView::updateWholeList (vector<const PkmnSpecies *> pkmnList) {
+void PkmnListView::updateWholeList (vector<const PkmnSpecies *> pkmnList) {
 
   for (unsigned int i=0; i<6; ++i) {
     if (i < pkmnList.size())
@@ -52,5 +58,55 @@ void PkmnPartyListView::updateWholeList (vector<const PkmnSpecies *> pkmnList) {
 //    _selected = -1;
 //    emit changedSelectedPkmn(_selected);
 //  }
+
+}
+
+// LARGE ICONS
+
+PkmnListViewLargeIcon::PkmnListViewLargeIcon (
+    QWidget *parent,
+    int elementNumber,
+    int lineNumber,
+    int orientation)
+  : PkmnListView(parent) {
+
+  _activePkmnList.resize(elementNumber);
+
+  for (int i=0; i<elementNumber; ++i) {
+
+    _activePkmnList[i] = new PkmnSpeciesListItemLarge(this, i+1);
+    _activePkmnList[i] -> setSelected(false);
+
+    connect(_activePkmnList[i], SIGNAL(pkmnSelected(int)),
+            this, SIGNAL(selectPkmnEvent(int)));
+
+  }
+
+  initialize(orientation, lineNumber);
+
+}
+
+// SMALL ICONS
+
+PkmnListViewSmallIcon::PkmnListViewSmallIcon (
+    QWidget *parent,
+    int elementNumber,
+    int lineNumber,
+    int orientation)
+  : PkmnListView(parent) {
+
+  _activePkmnList.resize(elementNumber);
+
+  for (int i=0; i<elementNumber; ++i) {
+
+    _activePkmnList[i] = new PkmnSpeciesListItemSmall(this, i+1);
+    _activePkmnList[i] -> setSelected(false);
+
+    connect(_activePkmnList[i], SIGNAL(pkmnSelected(int)),
+            this, SIGNAL(selectPkmnEvent(int)));
+
+  }
+
+  initialize(orientation, lineNumber);
 
 }

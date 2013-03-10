@@ -3,6 +3,14 @@
 
 #include <QWidget>
 
+#include <string>
+using std::string;
+
+#include "pkmninfoview.h"
+#include "pkmnspeciespickerview.h"
+#include "pkmnmovepickerview.h"
+#include "pkmnlistview.h"
+
 class PkmnSaveStateModel;
 
 class PkmnBoxView : public QWidget {
@@ -29,8 +37,14 @@ private:
 
   int _selectedBoxIndex;
   int _selectedPkmnIndex;
+  bool _disableUpdate;
 
   PkmnSaveStateModel *_model;
+
+  PkmnInfoView *_pkmnInfo;
+  PkmnSpeciesPickerView *_speciesPicker;
+  PkmnMovePickerView *_movePicker;
+  PkmnListView *_partyList;
 
 };
 

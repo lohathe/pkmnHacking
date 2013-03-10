@@ -9,13 +9,11 @@ using std::vector;
 #include "pkmnlistitemview.h"
 #include "pkmnspecies.h"
 
-class PkmnPartyListView : public QWidget {
+class PkmnListView : public QWidget {
 
   Q_OBJECT
 
 public:
-
-  PkmnPartyListView (QWidget *);
 
   void setSelectedPartyPkmn (int);
   void updateWholeList (vector<const PkmnSpecies *>);
@@ -27,9 +25,30 @@ signals:
 
   void selectPkmnEvent (int);
 
-private:
+protected:
 
-  PkmnSpeciesListItem *_activePkmnList[6];
+  PkmnListView (QWidget *);
+  virtual void initialize(int, int);
+
+  vector<PkmnSpeciesListItem *> _activePkmnList;
+
+};
+
+class PkmnListViewSmallIcon: public PkmnListView {
+
+  Q_OBJECT
+
+public:
+  PkmnListViewSmallIcon(QWidget *, int, int, int);
+
+};
+
+class PkmnListViewLargeIcon: public PkmnListView {
+
+  Q_OBJECT
+
+public:
+  PkmnListViewLargeIcon(QWidget *, int, int, int);
 
 };
 

@@ -63,7 +63,7 @@ private:
   PkmnInfoView *_pkmnInfo;
   PkmnSpeciesPickerView *_speciesPicker;
   PkmnMovePickerView *_movePicker;
-  PkmnPartyListView *_partyList;
+  PkmnListView *_partyList;
 
 };
 

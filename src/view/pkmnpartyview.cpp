@@ -20,7 +20,7 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   QPushButton *remove = new QPushButton("DELETE", this);
   connect(remove, SIGNAL(clicked()), this, SIGNAL(deletePkmnEvent()));
 
-  _partyList = new PkmnPartyListView(this);
+  _partyList = new PkmnListViewLargeIcon(this, 6, 1, Qt::Vertical);
   connect(_partyList, SIGNAL(selectPkmnEvent(int)),
           this,       SIGNAL(partyPkmnSelectedEvent(int)));
 
