@@ -7,11 +7,13 @@ using std::string;
 #include <QObject>
 #include <QAction>
 
+#include "pkmnparametercontroller.h"
+
 class PkmnSpeciesDescriptor;
 class PkmnSaveStateModel;
 class PkmnPartyView;
 
-class PkmnPartyController : public QObject {
+class PkmnPartyController : public PkmnParameterController {
 
   Q_OBJECT
 
@@ -19,13 +21,9 @@ public:
 
   PkmnPartyController (PkmnSaveStateModel *, PkmnPartyView *);
 
-signals:
-
-  void operationOutcomeEvent (bool, const string &);
-
 public slots:
 
-  void manageEnableCoherency(bool);
+  virtual void manageEnableCoherency(bool);
 
   // SYNCHRONIZE THE VIEWS
   void managePartyPkmnSelected(int);
@@ -38,10 +36,24 @@ public slots:
 
   void managePkmnSpeciesSelected(int);
   void managePkmnMoveSelected(int);
-  void managePkmnStrParamChanged(int, const string &);
-  void managePkmnParameterChanged(int, int);
+  //virtual void managePkmnStrParamChanged(int, const string &);
+  //virtual void managePkmnParamChanged(int, int);
 
 private slots:
+
+protected:
+
+  virtual const PkmnSpeciesDescriptor *getCurrentPkmnSpeciesDescriptor() const;
+
+  virtual bool isCurrentPkmnValid() const;
+
+  virtual const PkmnState getCurrentPkmnInfo() const;
+
+  virtual int getCurrentPkmnParam(int) const;
+  virtual void setCurrentPkmnParam(int, int);
+
+  virtual string getCurrentPkmnStrParam(int) const;
+  virtual void setCurrentPkmnStrParam(int, const string &);
 
 private:
 
@@ -51,22 +63,8 @@ private:
   bool _isCreatingPkmn;
   bool _isChangingMove;
 
-  bool _coherencyEnabled;
-
   PkmnSaveStateModel *_model;
   PkmnPartyView *_view;
-
-  // UTILITY METHODS
-
-  const PkmnSpeciesDescriptor *getSelectedPkmnSpeciesDescriptor() const;
-
-  void manageIVParameter(int, int);
-  void manageHPParameter(int, int);
-  void manageLvlParameter(int, int);
-  void manageSpeciesParameter(int, int);
-  void manageAlimentParameter(int, int);
-  void managePPParameter(int, int);
-  void setPartyPkmnBasicStats(int);
 
 };
 

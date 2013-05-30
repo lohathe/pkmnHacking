@@ -1,5 +1,6 @@
 #include "pkmnsavestateview.h"
 #include "pkmnpartyview.h"
+#include "pkmnboxview.h"
 #include "pkmnpokedexview.h"
 
 #include <QString>
@@ -12,17 +13,20 @@
 PkmnSaveStateView::PkmnSaveStateView () {
 
   _partyView = new PkmnPartyView(this);
+  _boxView = new PkmnBoxView(this);
   _pokedexView = new PkmnPokedexView(this);
 
 
   QWidget *placeholder = new QWidget(this);
   QVBoxLayout *placeholderLayout = new QVBoxLayout();
   placeholderLayout -> addWidget(_partyView);
+  placeholderLayout -> addWidget(_boxView);
   placeholderLayout -> addWidget(_pokedexView);
   placeholder -> setLayout(placeholderLayout);
   setCentralWidget(placeholder);
 
   _partyView -> setVisible(false);
+  _boxView -> setVisible(false);
   _pokedexView -> setVisible(false);
 
 
@@ -80,6 +84,10 @@ void PkmnSaveStateView::manageOperationOutcome(bool outcome, const string &messa
 
 PkmnPartyView *PkmnSaveStateView::getPartyView() {
   return _partyView;
+}
+
+PkmnBoxView *PkmnSaveStateView::getBoxView() {
+  return _boxView;
 }
 
 PkmnPokedexView *PkmnSaveStateView::getPokedexView() {

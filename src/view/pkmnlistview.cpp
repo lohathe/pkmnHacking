@@ -29,7 +29,7 @@ void PkmnListView::initialize(
 
 void PkmnListView::setSelectedPartyPkmn(int index) {
 
-  for (int i = 0; i < 6; ++i) {
+  for (int i = 0; i < _activePkmnList.size(); ++i) {
     _activePkmnList[i] -> setSelected(false);
   }
   if (index > 0)
@@ -39,7 +39,7 @@ void PkmnListView::setSelectedPartyPkmn(int index) {
 
 void PkmnListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index) {
 
-  if (index < 1 || index > 6) return;
+  if (index < 1 || index > _activePkmnList.size()) return;
 
   _activePkmnList[index-1] -> updateItem(pkmnInfo);
 
@@ -47,7 +47,7 @@ void PkmnListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index) {
 
 void PkmnListView::updateWholeList (vector<const PkmnSpecies *> pkmnList) {
 
-  for (unsigned int i=0; i<6; ++i) {
+  for (unsigned int i=0; i<_activePkmnList.size(); ++i) {
     if (i < pkmnList.size())
       _activePkmnList[i] -> updateItem(pkmnList[i]);
     else

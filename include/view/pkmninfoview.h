@@ -84,6 +84,9 @@ protected:
   void initializeWidgets();
   void connectWidgets();
 
+  virtual void displayInvalidInfo();
+  virtual void displayValidInfo(const PkmnState);
+
   virtual void enableAuthorized(bool) = 0;
 
   virtual QLayout *organizeLayoutGeneralInfo();
@@ -114,6 +117,7 @@ public:
   PkmnInfoViewBox (QWidget *);
 
 protected:
+  virtual void displayValidInfo(const PkmnState);
   virtual void enableAuthorized(bool);
   virtual QLayout *organizeLayoutSpecies();
 

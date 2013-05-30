@@ -15,6 +15,10 @@ byte PkmnMove::getType () const { return _type; }
 
 int PkmnMove::getPP () const { return _pp; }
 
+int PkmnMove::getMaxPP (int ppUp) const {
+  return (_pp/5)*ppUp + _pp;
+}
+
 int PkmnMove::getPwr () const { return _power; }
 
 int PkmnMove::getAcc () const { return _accuracy; }

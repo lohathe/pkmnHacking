@@ -21,6 +21,8 @@ public:
 
   PkmnBoxView (QWidget *);
 
+  void connectModel(PkmnSaveStateModel *);
+
   void setSelectedBox(int);
   void setSelectedBoxPkmn(int);
   void displayPkmnInfo();
@@ -31,7 +33,11 @@ public:
 
 signals:
 
+  void boxSelectedEvent(int);
+  void boxPkmnSelectedEvent(int);
+
 public slots:
+
 
 private:
 
@@ -44,7 +50,7 @@ private:
   PkmnInfoView *_pkmnInfo;
   PkmnSpeciesPickerView *_speciesPicker;
   PkmnMovePickerView *_movePicker;
-  PkmnListView *_partyList;
+  PkmnListView *_pkmnList;
 
 };
 

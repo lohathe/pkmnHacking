@@ -8,8 +8,8 @@
 PkmnSpinBox::PkmnSpinBox (QWidget *parent, int referredInfo) :
   QSpinBox(parent), _referredInfo(referredInfo) {
 
-  setMinimum(PkmnState::getMinValue(referredInfo));
-  setMaximum(PkmnState::getMaxValue(referredInfo));
+  setMinimum(PkmnState::getMinValue(referredInfo) - 10);
+  setMaximum(PkmnState::getMaxValue(referredInfo) + 10);
 
   connect(this, SIGNAL(valueChanged(int)),
           this, SLOT(manageValueChanged(int)));

@@ -20,6 +20,7 @@ public:
   byte getElement () const;
   byte getType () const;
   int getPP () const;
+  int getMaxPP(int) const;
   int getPwr () const;
   int getAcc () const;
 

@@ -96,6 +96,36 @@ bool PkmnSaveStateModel::deletePartyPkmnAtIndex(int partyIndex) {
 
 }
 
+// BOX PKMN INFO
+vector<const PkmnSpecies *> PkmnSaveStateModel::getBoxPkmnList(int boxIndex) const {
+  return _saveState -> getBoxPkmnList(boxIndex);
+}
+int PkmnSaveStateModel::getBoxPkmnCount(int boxIndex) const {
+  return _saveState -> getBoxPkmnCount(boxIndex);
+}
+
+int PkmnSaveStateModel::getBoxPkmnParam(int boxIndex, int pkmnIndex, int info) const {
+  return _saveState -> getBoxPkmnParam(boxIndex, pkmnIndex, info);
+}
+string PkmnSaveStateModel::getBoxPkmnStrParam(int boxIndex, int pkmnIndex, int info) const {
+  return _saveState -> getBoxPkmnStrParam(boxIndex, pkmnIndex, info);
+}
+bool PkmnSaveStateModel::setBoxPkmnParam(int, int, int, int) {
+  return false;
+}
+bool PkmnSaveStateModel::setBoxPkmnStrParam(int, int, int, string) {
+  return false;
+}
+PkmnState PkmnSaveStateModel::getBoxPkmnState(int boxIndex, int pkmnIndex) const {
+  return _saveState -> getBoxPkmnState(boxIndex, pkmnIndex);
+}
+bool PkmnSaveStateModel::createBoxPkmnAtIndex(int, int, int) {
+  return false;
+}
+bool PkmnSaveStateModel::deleteBoxPkmnAtIndex(int, int) {
+  return false;
+}
+
 bool PkmnSaveStateModel::saveToFile() const {
 
   return _saveState -> saveToFile();

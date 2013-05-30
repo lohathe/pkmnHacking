@@ -33,7 +33,7 @@ int main (int argc, char **argv) {
 
   QApplication app(argc, argv);
 
-  new PkmnSaveStateController("/home/luca/Desktop/Saves/prova/pmyellow.sav");
+  new PkmnSaveStateController("/home/luca/Desktop/Saves/prova/pmyellow151.sav");
 
   return app.exec();
 

@@ -10,6 +10,7 @@
 using std::string;
 
 class PkmnPartyView;
+class PkmnBoxView;
 class PkmnPokedexView;
 
 class PkmnSaveStateModel;
@@ -23,6 +24,7 @@ public:
   PkmnSaveStateView ();
 
   PkmnPartyView *getPartyView();
+  PkmnBoxView *getBoxView();
   PkmnPokedexView *getPokedexView();
 
   QToolBar *getMainToolBar();
@@ -37,6 +39,7 @@ public slots:
 private:
 
   PkmnPartyView *_partyView;
+  PkmnBoxView *_boxView;
   PkmnPokedexView *_pokedexView;
 
   QToolBar *_toolBar;

@@ -47,8 +47,10 @@ private:
   static const int PARTY_START_OFFSET           = 0x2F2C;
 
   static const int CURRENT_BOX_NUMBER_OFFSET    = 0x284C;
-  static const int CURRENT_BOX_START_OFFSET    = 0x30C0;
-  static const int STORED_BOX_START_OFFSET     = 0x4462;
+  static const int CURRENT_BOX_START_OFFSET     = 0x30C0;
+  static const int STORED_BOX_START_OFFSET1     = 0x4000;
+  static const int STORED_BOX_START_OFFSET2     = 0x6000;
+  //static const int STORED_BOX_START_OFFSET     = 0x4462;
 
   /*
   // party

@@ -1,6 +1,6 @@
 #include "pkmnboxcontroller.h"
 #include "pkmnsavestatemodel.h"
-//#include "pkmnboxview.h"
+#include "pkmnboxview.h"
 
 PkmnBoxController::PkmnBoxController (PkmnSaveStateModel *model,
                                       PkmnBoxView *view)
@@ -10,11 +10,20 @@ PkmnBoxController::PkmnBoxController (PkmnSaveStateModel *model,
     _selectedPkmnIndex(0),
     _selectedMoveIndex(0),
     _isCreatingPkmn(false),
-    _isChangingMove(false) {}
+    _isChangingMove(false) {
+
+  connect (_view, SIGNAL(boxPkmnSelectedEvent(int)),
+           this,  SLOT(manageBoxPkmnSelected(int)));
+  connect (_view, SIGNAL(boxSelectedEvent(int)),
+           this,  SLOT(manageBoxSelected(int)));
+
+  _view -> connectModel(_model);
+
+}
 
 void PkmnBoxController::manageBoxSelected(int boxIndex) {
-/*
-  if (boxIndex < 0 || boxIndex > 12) {
+
+  if (boxIndex < 1 || boxIndex > 12) {
     emit operationOutcome(false,
                           "No valid box selected.");
     return;
@@ -29,10 +38,10 @@ void PkmnBoxController::manageBoxSelected(int boxIndex) {
   _view -> setSelectedBox(_selectedBoxIndex);
   _view -> setSelectedBoxPkmn(_selectedPkmnIndex);
   _view -> displayPkmnInfo();
-*/
+
 }
 void PkmnBoxController::manageBoxPkmnSelected(int pkmnIndex) {
-/*
+
   if (pkmnIndex < 0 ||
       pkmnIndex > 20 ||
       _selectedBoxIndex == 0 ||
@@ -50,7 +59,7 @@ void PkmnBoxController::manageBoxPkmnSelected(int pkmnIndex) {
   //_view -> setSelectedBox(_selectedBoxIndex);
   _view -> setSelectedBoxPkmn(_selectedPkmnIndex);
   _view -> displayPkmnInfo();
-*/
+
 }
 
 void PkmnBoxController::manageCreatePkmn() {

@@ -28,6 +28,50 @@ int PkmnComputeValuesUtility::computeExpForLevel(
 
 }
 
+int PkmnComputeValuesUtility::computeLevelForExp(
+    const PkmnSpeciesDescriptor *descriptor,
+    int exp) {
+/*
+  bool stop = false;
+  int levelmin = 1;
+  int levelmax = 100;
+  int level = 50;
+
+  while (!stop) {
+
+    int temp = PkmnComputeValuesUtility::computeExpForLevel(descriptor, level);
+    if (temp >= exp)
+      levelmax = level;
+    else
+      levelmin = level;
+
+    level = (levelmin + levelmax)/2;
+
+    if (levelmax - levelmin <= 1) {
+      stop = true;
+    }
+  return levelmin;
+
+  }*/
+
+  int level = 1;
+  int inf = PkmnComputeValuesUtility::computeExpForLevel(descriptor, 1);
+  int sup = PkmnComputeValuesUtility::computeExpForLevel(descriptor, 2);
+  bool stop = false;
+  while (!stop) {
+    if (inf <= exp && exp < sup)
+      stop = true;
+    else {
+      level ++;
+      inf = sup;
+      sup = PkmnComputeValuesUtility::computeExpForLevel(descriptor, level+1);
+    }
+  }
+
+  return level;
+
+}
+
 int PkmnComputeValuesUtility::computeStat(
     const PkmnSpeciesDescriptor *descriptor,
     int stat,
@@ -56,7 +100,7 @@ int PkmnComputeValuesUtility::computeStat(
       base = descriptor->getBasicSpc();
       usediv = (iv>>0)&0x0F;
     }
-    result = ((usediv + base + sqrt(ev)/80)*level)/50 + 5;
+    result = ((usediv + base + sqrt(ev)/8)*level)/50 + 5;
   }
 
   return result;

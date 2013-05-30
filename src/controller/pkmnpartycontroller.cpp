@@ -7,10 +7,16 @@
 
 #include <QObject>
 
-PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
-                                          PkmnPartyView *view) :
-  _selectedPartyIndex(0), _selectedMoveIndex(0), _isCreatingPkmn(false),
-  _isChangingMove(false), _coherencyEnabled(true), _model(model), _view(view) {
+PkmnPartyController::PkmnPartyController (
+    PkmnSaveStateModel *model,
+    PkmnPartyView *view) :
+  PkmnParameterController(true),
+  _selectedPartyIndex(0),
+  _selectedMoveIndex(0),
+  _isCreatingPkmn(false),
+  _isChangingMove(false),
+  _model(model),
+  _view(view) {
 
   connect(_view, SIGNAL(partyPkmnSelectedEvent(int)),
           this,  SLOT(managePartyPkmnSelected(int)));
@@ -25,7 +31,7 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
   connect(_view, SIGNAL(pkmnStrParamChangedEvent(int, const string&)),
           this,  SLOT(managePkmnStrParamChanged(int, const string&)));
   connect(_view, SIGNAL(pkmnParameterChangedEvent(int,int)),
-          this,  SLOT(managePkmnParameterChanged(int,int)));
+          this,  SLOT(managePkmnParamChanged(int,int)));
   connect(_view, SIGNAL(pkmnMoveChangeEvent(int)),
           this,  SLOT(manageMoveChange(int)));
   connect(_view, SIGNAL(pkmnMoveSelectedEvent(int)),
@@ -39,7 +45,7 @@ PkmnPartyController::PkmnPartyController (PkmnSaveStateModel *model,
 
 void PkmnPartyController::manageEnableCoherency(bool enabled) {
 
-  _coherencyEnabled = enabled;
+  PkmnParameterController::manageEnableCoherency(enabled);
   _view -> setCoherencyEnabled(enabled);
   //_view -> displayPkmnInfo();
 
@@ -161,11 +167,11 @@ void PkmnPartyController::managePkmnSpeciesSelected(int selectedSpecies) {
     }
   }// else {
 
-  managePkmnParameterChanged(SPECIES, selectedSpecies);
+  managePkmnParamChanged(SPECIES, selectedSpecies);
   //}
 
   if (outcome && _coherencyEnabled)
-    setPartyPkmnBasicStats(_selectedPartyIndex);
+    setPkmnBasicStats();
 
   _isChangingMove = false;
   _view -> setSelectedPartyPkmn(_selectedPartyIndex);
@@ -190,6 +196,51 @@ void PkmnPartyController::managePkmnMoveSelected(int selectedMove) {
 
 }
 
+const PkmnSpeciesDescriptor *PkmnPartyController::getCurrentPkmnSpeciesDescriptor() const {
+
+  const PkmnState pkmn = _model->getPartyPkmnInfo(_selectedPartyIndex);
+  const PkmnSpecies *species = PkmnSpeciesList::getById(pkmn.get(SPECIES));
+  const PkmnSpeciesDescriptor *descriptor =
+      PkmnSpeciesDescriptorList::get(species->getIndex());
+  return descriptor;
+
+}
+
+bool PkmnPartyController::isCurrentPkmnValid() const {
+
+  return (_selectedPartyIndex <=6) && (_selectedPartyIndex >= 1);
+
+}
+
+const PkmnState PkmnPartyController::getCurrentPkmnInfo() const {
+
+  return _model->getPartyPkmnInfo(_selectedPartyIndex);
+
+}
+
+int PkmnPartyController::getCurrentPkmnParam(int info) const {
+
+  return _model->getPartyPkmnParameter(_selectedPartyIndex, info);
+
+}
+void PkmnPartyController::setCurrentPkmnParam(int info, int value) {
+
+  _model->setPartyPkmnParameter(_selectedPartyIndex, info, value);
+
+}
+
+string PkmnPartyController::getCurrentPkmnStrParam(int info) const {
+
+  return _model->getPartyPkmnName(_selectedPartyIndex);
+
+}
+void PkmnPartyController::setCurrentPkmnStrParam(int info, const string &value) {
+
+  _model->setPartyPkmnStrParam(_selectedPartyIndex, info, value);
+
+}
+
+/*
 void PkmnPartyController::managePkmnStrParamChanged(int info, const string &newName) {
 
   if (newName.size() > 10) {
@@ -434,3 +485,5 @@ const PkmnSpeciesDescriptor *PkmnPartyController::getSelectedPkmnSpeciesDescript
   return descriptor;
 
 }
+
+*/

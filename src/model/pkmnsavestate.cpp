@@ -303,11 +303,12 @@ vector<const PkmnSpecies *> PkmnSaveState::getBoxPkmnList(
 
   vector<const PkmnSpecies *> result;
 
-  for (int i=0; i<20; ++i) {
-    int currentBoxNumber = readData(
-          PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+  int pkmnStoredInBox = getBoxPkmnCount(boxIndex);
+  int currentBoxNumber = readData(
+        POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
+  for (int i=1; i<=pkmnStoredInBox; ++i) {
     int pkmnSpeciesAtIndex = readData(
-          PkmnOffsetManager::getBoxPkmnListOffset(boxIndex, i, currentBoxNumber), 1);
+          POM::getBoxPkmnListOffset(boxIndex, i, currentBoxNumber), 1);
     result.push_back(PkmnSpeciesList::getById(pkmnSpeciesAtIndex));
   }
 
@@ -317,8 +318,8 @@ vector<const PkmnSpecies *> PkmnSaveState::getBoxPkmnList(
 int PkmnSaveState::getBoxPkmnCount(
     int boxIndex) const {
 
-  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
-  return readData(PkmnOffsetManager::getBoxPkmnCountOffset(boxIndex, currentBoxIndex), 1);
+  int currentBoxIndex = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
+  return readData(POM::getBoxPkmnCountOffset(boxIndex, currentBoxIndex), 1);
 
 }
 
@@ -330,11 +331,11 @@ int PkmnSaveState::getBoxPkmnParam(
   if (pkmnIndex > getBoxPkmnCount(boxIndex))
     return 0x00;
 
-  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
-  return readData(PkmnOffsetManager::getBoxPkmnParameterOffset(boxIndex,
-                                                               pkmnIndex,
-                                                               info,
-                                                               currentBoxIndex),
+  int currentBoxIndex = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
+  return readData(POM::getBoxPkmnParameterOffset(boxIndex,
+                                                 pkmnIndex,
+                                                 info,
+                                                 currentBoxIndex),
                   1);
 
 }
@@ -348,12 +349,12 @@ string PkmnSaveState::getBoxPkmnStrParam(
   if (info != PKMNNAME && info != OTNAME)
     return "...";
 
-  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+  int currentBoxIndex = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
   return PkmnStringReader::toStdString(
-        _data + PkmnOffsetManager::getBoxPkmnParameterOffset(boxIndex,
-                                                             pkmnIndex,
-                                                             info,
-                                                             currentBoxIndex));
+        _data + POM::getBoxPkmnParameterOffset(boxIndex,
+                                               pkmnIndex,
+                                               info,
+                                               currentBoxIndex));
 
 }
 bool PkmnSaveState::setBoxPkmnParam(
@@ -365,7 +366,7 @@ bool PkmnSaveState::setBoxPkmnParam(
   if (pkmnIndex > getBoxPkmnCount(boxIndex))
     return false;
 
-  int currentBoxIndex = readData(PkmnOffsetManager::getCurrentBoxNumberOffset(), 1);
+  int currentBoxIndex = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
 
   if (info == SPECIES) {
 
@@ -401,7 +402,7 @@ bool PkmnSaveState::setBoxPkmnStrParam(
   if (pkmnIndex > getBoxPkmnCount(boxIndex))
     return false;
 
-  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
   byte *name = PkmnStringReader::fromStdString(value);
   int startingOffset =
       POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, info, currentBox);
@@ -420,7 +421,7 @@ PkmnState PkmnSaveState::getBoxPkmnState(
   if (!pkmnExistsAtBoxIndex(boxIndex, pkmnIndex))
     return PkmnState(NULL, NULL, NULL);
 
-  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
   return PkmnState(
         _data + POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, SPECIES, currentBox),
         _data + POM::getBoxPkmnParameterOffset(boxIndex, pkmnIndex, PKMNNAME, currentBox),
@@ -440,7 +441,7 @@ bool PkmnSaveState::createBoxPkmnAtIndex(
   if (pkmnExistsAtBoxIndex(boxIndex, pkmnIndex))
     return false;
 
-  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
   int pkmnBoxCount = readData(POM::getBoxPkmnCountOffset(boxIndex, currentBox), 1);
   _data[POM::getBoxPkmnCountOffset(boxIndex, currentBox)] =
       static_cast<byte>(pkmnBoxCount + 1);
@@ -479,7 +480,7 @@ bool PkmnSaveState::pkmnExistsAtBoxIndex (
     return false;
   }
 
-  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1);
+  int currentBox = readData(POM::getCurrentBoxNumberOffset(), 1) - 0x80 + 1;
   if (readData(POM::getBoxPkmnListOffset(boxIndex, pkmnIndex, currentBox), 1) == 0xFF) {
     return false;
   }

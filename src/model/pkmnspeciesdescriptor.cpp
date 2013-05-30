@@ -57,7 +57,7 @@ int PkmnSpeciesDescriptor::getBasicHP() const { return _basicHp; }
 int PkmnSpeciesDescriptor::getBasicAtt() const { return _basicAtt; }
 int PkmnSpeciesDescriptor::getBasicDef() const { return _basicDef; }
 int PkmnSpeciesDescriptor::getBasicSpd() const { return _basicSpd; }
-int PkmnSpeciesDescriptor::getBasicSpc() const { return _basicSpd; }
+int PkmnSpeciesDescriptor::getBasicSpc() const { return _basicSpc; }
 vector<MoveLevel> PkmnSpeciesDescriptor::getLearningSet() const {
   return _learningSet;
 }

@@ -10,6 +10,7 @@ class PkmnSaveStateModel;
 class PkmnSaveStateView;
 
 class PkmnPartyController;
+class PkmnBoxController;
 class PkmnPokedexController;
 
 class PkmnSaveStateController : public QObject {
@@ -34,6 +35,7 @@ private:
   PkmnSaveStateView  *_view;
 
   PkmnPartyController *_partyController;
+  PkmnBoxController *_boxController;
   PkmnPokedexController *_pokedexController;
 
   void createActions();

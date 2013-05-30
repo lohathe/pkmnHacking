@@ -7,6 +7,7 @@ int PkmnOffsetManager::getPartyPkmnCountOffset() {
       PkmnOffsetManager::getPartyDataOffset(PKMNCOUNTDATA);
   return result;
 }
+
 // partyIndex in [1 .. 6]
 int PkmnOffsetManager::getPartyPkmnListOffset(int partyIndex) {
   int result = 0;
@@ -15,6 +16,7 @@ int PkmnOffsetManager::getPartyPkmnListOffset(int partyIndex) {
       (partyIndex - 1);
   return result;
 }
+
 int PkmnOffsetManager::getPartyPkmnParameterOffset(int partyIndex, int info) {
   int result = 0;
   if (info == PKMNNAME) {
@@ -39,6 +41,7 @@ int PkmnOffsetManager::getCurrentBoxNumberOffset() {
   result = PkmnOffsetManager::CURRENT_BOX_NUMBER_OFFSET;
   return result;
 }
+
 // boxIndex in [1 .. 12]
 int PkmnOffsetManager::getBoxPkmnCountOffset(
     int boxIndex,
@@ -48,6 +51,18 @@ int PkmnOffsetManager::getBoxPkmnCountOffset(
   if (boxIndex == currentBox)
     result = PkmnOffsetManager::CURRENT_BOX_START_OFFSET +
         PkmnOffsetManager::getBoxDataOffset(PKMNCOUNTDATA);
+  else {
+    int boxStoredPosition = 0;
+    if (boxIndex < currentBox) boxStoredPosition = boxIndex - 1;
+    else boxStoredPosition = boxIndex - 2;
+
+    if (boxStoredPosition < 6) result = PkmnOffsetManager::STORED_BOX_START_OFFSET1;
+    else result = PkmnOffsetManager::STORED_BOX_START_OFFSET2;
+
+    result = result + 1122 * (boxStoredPosition % 6)
+             + PkmnOffsetManager::getBoxDataOffset(PKMNCOUNTDATA);
+  }
+  /*
   else if (boxIndex < currentBox)
     result = PkmnOffsetManager::STORED_BOX_START_OFFSET +
         1122 * (boxIndex - 1) +
@@ -56,14 +71,16 @@ int PkmnOffsetManager::getBoxPkmnCountOffset(
     result = PkmnOffsetManager::STORED_BOX_START_OFFSET +
         1122 * (boxIndex - 2) +
         PkmnOffsetManager::getBoxDataOffset(PKMNCOUNTDATA);
+  */
   return result;
 
 }
+
 int PkmnOffsetManager::getBoxPkmnListOffset(
     int boxIndex,
     int pkmnIndex,
     int currentBox) {
-
+/*
   int result = 0;
   if (boxIndex == currentBox)
     result = PkmnOffsetManager::CURRENT_BOX_START_OFFSET +
@@ -79,9 +96,27 @@ int PkmnOffsetManager::getBoxPkmnListOffset(
         1122 * (boxIndex - 2) +
         PkmnOffsetManager::getBoxDataOffset(PKMNSPECIESLISTDATA) +
         (pkmnIndex - 1);
+  return result;*/
+
+  int result = 0;
+  if (boxIndex == currentBox)
+    result = PkmnOffsetManager::CURRENT_BOX_START_OFFSET;
+  else {
+    int boxStoredPosition = 0;
+    if (boxIndex < currentBox) boxStoredPosition = boxIndex - 1;
+    else boxStoredPosition = boxIndex - 2;
+
+    if (boxStoredPosition < 6) result = PkmnOffsetManager::STORED_BOX_START_OFFSET1;
+    else result = PkmnOffsetManager::STORED_BOX_START_OFFSET2;
+
+    result = result + 1122 * (boxStoredPosition % 6);
+  }
+  result += PkmnOffsetManager::getBoxDataOffset(PKMNSPECIESLISTDATA) +
+            (pkmnIndex - 1);
   return result;
 
 }
+
 int PkmnOffsetManager::getBoxPkmnParameterOffset(
     int boxIndex,
     int pkmnIndex,
@@ -94,19 +129,33 @@ int PkmnOffsetManager::getBoxPkmnParameterOffset(
   int result = 0;
   if (boxIndex == currentBox)
     result = PkmnOffsetManager::CURRENT_BOX_START_OFFSET;
+  else {
+    int boxStoredPosition = 0;
+    if (boxIndex < currentBox) boxStoredPosition = boxIndex - 1;
+    else boxStoredPosition = boxIndex - 2;
+
+    if (boxStoredPosition < 6) result = PkmnOffsetManager::STORED_BOX_START_OFFSET1;
+    else result = PkmnOffsetManager::STORED_BOX_START_OFFSET2;
+
+    result = result + 1122 * (boxStoredPosition % 6);
+  }
+  /*
   else if (boxIndex < currentBox)
     result = PkmnOffsetManager::STORED_BOX_START_OFFSET +
         1122 * (pkmnIndex - 1);
   else if (boxIndex > currentBox)
     result = PkmnOffsetManager::STORED_BOX_START_OFFSET +
-        1122 * (pkmnIndex - 2);
+        1122 * (pkmnIndex - 2);*/
 
   if (paramInfo == PKMNNAME)
-    result += PkmnOffsetManager::getBoxDataOffset(PKMNNAMEDATA);
+    result += PkmnOffsetManager::getBoxDataOffset(PKMNNAMEDATA) +
+        11 * (pkmnIndex - 1);
   else if (paramInfo== OTNAME)
-    result += PkmnOffsetManager::getBoxDataOffset(PKMNOTNAMEDATA);
+    result += PkmnOffsetManager::getBoxDataOffset(PKMNOTNAMEDATA) +
+        11 * (pkmnIndex - 1);
   else
-    result += PkmnOffsetManager::getBoxDataOffset(PKMNSTATSDATA);
+    result += PkmnOffsetManager::getBoxDataOffset(PKMNSTATSDATA) +
+        33 * (pkmnIndex - 1) +
         PkmnState::getOffset(paramInfo);
 
   return result;
@@ -116,15 +165,19 @@ int PkmnOffsetManager::getBoxPkmnParameterOffset(
 int PkmnOffsetManager::getOriginalTrainerNameOffset() {
   return PkmnOffsetManager::ORIGINAL_TRAINER_NAME_OFFSET;
 }
+
 int PkmnOffsetManager::getOriginalTrainerIdOffset() {
   return PkmnOffsetManager::ORIGINAL_TRAINER_ID_OFFSET;
 }
+
 int PkmnOffsetManager::getNemesisTrainerNameOffset() {
   return PkmnOffsetManager::NEMESIS_TRAINER_NAME_OFFSET;
 }
+
 int PkmnOffsetManager::getMoneyOffset() {
   return PkmnOffsetManager::MONEY_OFFSET;
 }
+
 int PkmnOffsetManager::getChecksumOffset() {
   return PkmnOffsetManager::CHECKSUM_OFFSET;
 }
@@ -140,6 +193,7 @@ int PkmnOffsetManager::getPartyDataOffset(int info) {
   else if (info == PKMNNAMEDATA)        result = 0x0152;
   return result;
 }
+
 int PkmnOffsetManager::getBoxDataOffset(int info) {
   int result = 0;
   if (info == PKMNCOUNTDATA)            result = 0x0000;

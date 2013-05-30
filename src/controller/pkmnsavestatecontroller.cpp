@@ -1,5 +1,6 @@
 #include "pkmnsavestatecontroller.h"
 #include "pkmnpartycontroller.h"
+#include "pkmnboxcontroller.h"
 #include "pkmnpokedexcontroller.h"
 
 #include "pkmnsavestatemodel.h"
@@ -7,6 +8,7 @@
 
 #include "pkmnsavestateview.h"
 #include "pkmnpartyview.h"
+#include "pkmnboxview.h"
 #include "pkmnpokedexview.h"
 
 #include <string>
@@ -26,6 +28,10 @@ PkmnSaveStateController::PkmnSaveStateController (string filepath) {
   _partyController = new PkmnPartyController(_model, _view->getPartyView());
   connect(_partyController, SIGNAL(operationOutcomeEvent(bool,string)),
           _view,            SLOT(manageOperationOutcome(bool,string)));
+
+  _boxController = new PkmnBoxController(_model, _view->getBoxView());
+  connect(_boxController, SIGNAL(operationOutcome(bool,string)),
+          _view,          SLOT(manageOperationOutcome(bool,string)));
 
   _pokedexController = new PkmnPokedexController(_model, _view->getPokedexView());
   connect(_pokedexController, SIGNAL(operationOutcomeEvent(bool,string)),
@@ -93,6 +99,9 @@ void PkmnSaveStateController::createActions() {
   QAction *showParty = new QAction(QIcon(":/img/pokeballSprite.png"), "Party Pokemon", showGroup);
   connect(showParty, SIGNAL(toggled(bool)), _view->getPartyView(), SLOT(setVisible(bool)));
   showParty->setCheckable(true);
+  QAction *showBox = new QAction(QIcon(":/img/pokeballSprite.png"), "Box Pokemon", showGroup);
+  connect(showBox, SIGNAL(toggled(bool)), _view->getBoxView(), SLOT(setVisible(bool)));
+  showBox->setCheckable(true);
   QAction *showPokedex = new QAction(QIcon(":/img/pokeballSprite.png"), "Pokedex", showGroup);
   connect(showPokedex, SIGNAL(toggled(bool)), _view->getPokedexView(), SLOT(setVisible(bool)));
   showPokedex->setCheckable(true);
@@ -106,6 +115,7 @@ void PkmnSaveStateController::createActions() {
   toolBar -> addAction(saveToFile);
   toolBar -> addSeparator();
   toolBar -> addAction(showParty);
+  toolBar -> addAction(showBox);
   toolBar -> addAction(showPokedex);
   toolBar -> addSeparator();
   toolBar -> addAction(enableCoherency);

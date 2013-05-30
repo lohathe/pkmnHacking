@@ -8,6 +8,7 @@ class PkmnComputeValuesUtility {
 public:
 
   static int computeExpForLevel(const PkmnSpeciesDescriptor *, int);
+  static int computeLevelForExp(const PkmnSpeciesDescriptor *, int);
   static int computeStat(const PkmnSpeciesDescriptor *, int, int, int, int);
 
 };
