@@ -9,6 +9,7 @@
 #include <cstdio>
 
 #include <QFile>
+#include <QTextStream>
 
 MoveLevel::MoveLevel(int level, int move) : _level(level), _move(move) {}
 int MoveLevel::getLevel() const { return _level; }
@@ -110,22 +111,24 @@ const PkmnSpeciesDescriptor *PkmnSpeciesDescriptorList::get(int index) {
 
 void PkmnSpeciesDescriptorList::initiazlizePkmnList() {
 
-  std::ifstream infile;
-  infile.open("./pkmndescriptor", std::ios::in);
+  QFile file(":/img/pkmndescriptor");
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    printf("Cannot find file pkmndescriptor\n");
+  }
+  QTextStream filestream(&file);
 
   for (int i=0; i<152; ++i) {
 
-    char line[80];
     int index, evmethod, lvlspeed, hp, att, def, spd, spc, lvlmv, mv;
     vector<MoveLevel> learnset;
 
-    infile.getline(line, 80);
-    std::sscanf(line, "%d %d %d %d %d %d %d %d",
+    QString line = filestream.readLine();
+    std::sscanf(line.toStdString().c_str(), "%d %d %d %d %d %d %d %d",
                 &index, &evmethod, &lvlspeed, &hp, &att, &def, &spd, &spc);
-    infile.getline(line, 80);
-    while (std::sscanf(line, "%d %d", &lvlmv, &mv) == 2) {
+    line = filestream.readLine();
+    while (std::sscanf(line.toStdString().c_str(), "%d %d", &lvlmv, &mv) == 2) {
       learnset.push_back(MoveLevel(lvlmv, mv));
-      infile.getline(line, 80);
+      line = filestream.readLine();
     }
 
     PkmnSpeciesDescriptorList::_pkmnList[i] =

@@ -57,11 +57,9 @@ PkmnPartyView::PkmnPartyView (QWidget *parent) :
   hlayout -> addLayout(leftPanel, 0);
   hlayout -> addLayout(rightPanel, 1);
 
-  //QLabel *title = new QLabel("POKEMON PARTY", this);
-  QString q = "ASD";
-  q = q+ QChar(0x2642);
-  QLabel *title = new QLabel(q, this);
+  QLabel *title = new QLabel("POKEMON PARTY", this);
   title -> setStyleSheet("background:#000;color:#FFF;font-weight:bold;padding:3px 300px 3px 300px;");
+  //title -> setStyleSheet("width:100%;background:#000;color:#FFF;font-weight:bold;");
   QVBoxLayout *layout = new QVBoxLayout();
   layout -> addWidget(title, 1, Qt::AlignHCenter);
   layout -> addLayout(hlayout);

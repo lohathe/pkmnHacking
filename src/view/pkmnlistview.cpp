@@ -12,8 +12,9 @@ void PkmnListView::initialize(
 
   QGridLayout *layout = new QGridLayout(this);
   //layout -> addStretch(1);
-  int lineSize = _activePkmnList.size()/lineNumber;
-  for (int i=0; i<_activePkmnList.size(); ++i) {
+  int max = _activePkmnList.size();
+  int lineSize = max/lineNumber;
+  for (int i=0; i<max; ++i) {
 
     int x = i/lineSize;
     int y = i%lineSize;
@@ -29,7 +30,7 @@ void PkmnListView::initialize(
 
 void PkmnListView::setSelectedPartyPkmn(int index) {
 
-  for (int i = 0; i < _activePkmnList.size(); ++i) {
+  for (int i = 0; i < (int)_activePkmnList.size(); ++i) {
     _activePkmnList[i] -> setSelected(false);
   }
   if (index > 0)
@@ -47,7 +48,7 @@ void PkmnListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index) {
 
 void PkmnListView::updateWholeList (vector<const PkmnSpecies *> pkmnList) {
 
-  for (unsigned int i=0; i<_activePkmnList.size(); ++i) {
+  for (unsigned int i=0; i< (int)_activePkmnList.size(); ++i) {
     if (i < pkmnList.size())
       _activePkmnList[i] -> updateItem(pkmnList[i]);
     else

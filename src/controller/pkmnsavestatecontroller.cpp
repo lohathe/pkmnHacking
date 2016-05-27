@@ -21,7 +21,7 @@ using std::string;
 
 PkmnSaveStateController::PkmnSaveStateController (string filepath) {
 
-  _model = new PkmnSaveStateModel(new PkmnSaveState(filepath, true));
+  _model = new PkmnSaveStateModel(new PkmnSaveState(filepath, false));
   _view = new PkmnSaveStateView();
 
   // CREATION OF SUB-CONTROLLERS
