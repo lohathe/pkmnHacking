@@ -147,6 +147,12 @@ bool PkmnSaveStateModel::openFile(const string &filepath) {
 
 }
 
+bool PkmnSaveStateModel::fileLoaded() const {
+
+  return _saveState -> fileLoaded();
+
+}
+
 PkmnPokedex PkmnSaveStateModel::getPkmnPokedex() const {
 
   return _saveState -> getPkmnPokedex();

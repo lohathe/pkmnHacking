@@ -20,6 +20,7 @@ public:
   // GENERAL INFO
   bool saveToFile() const;
   bool openFile(const string &);
+  bool fileLoaded() const;
 
   int getTrainerId() const;
 

@@ -40,7 +40,7 @@ void PkmnListView::setSelectedPartyPkmn(int index) {
 
 void PkmnListView::updateSingleItem(const PkmnSpecies *pkmnInfo, int index) {
 
-  if (index < 1 || index > _activePkmnList.size()) return;
+  if (index < 1 || index > (int)_activePkmnList.size()) return;
 
   _activePkmnList[index-1] -> updateItem(pkmnInfo);
 

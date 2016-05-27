@@ -22,6 +22,7 @@ public:
 
   bool saveToFile() const;
   bool openFile(const string &);
+  bool fileLoaded() const;
 
   // GENERAL INFO
   int getTrainerId() const;

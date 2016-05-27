@@ -52,6 +52,10 @@ PkmnSaveStateController::PkmnSaveStateController (string filepath) {
 void PkmnSaveStateController::manageSaveToFile() {
 
   bool outcome;
+  // Do not save if there is no file loaded!
+  if ( _model->fileLoaded() == false )
+    return;
+
   // PERFORMS INTEGRITY CHECK
   outcome = _model -> saveToFile();
 
@@ -71,18 +75,22 @@ void PkmnSaveStateController::manageOpenFile() {
     return;
   if (fileNames.size() > 1) {
     emit operationOutcomeEvent(false,
-                               "Cannot open more than a file at time.");
+                               "Cannot open more than 1 file at time.");
     return;
   }
   string filepath = fileNames[0].toStdString();
 
   bool outcome = _model->openFile(filepath);
-  if (outcome)
+  if (outcome) {
+    _view->getPartyView()->setEnabled(true);
+    _view->getBoxView()->setEnabled(true);
+    _view->getPokedexView()->setEnabled(true);
     emit operationOutcomeEvent(true,
                                "Successfully opened the file.");
-  else
+  } else {
     emit operationOutcomeEvent(false,
                                "Some error while opening the file.");
+  }
 
 }
 
@@ -99,12 +107,15 @@ void PkmnSaveStateController::createActions() {
   QAction *showParty = new QAction(QIcon(":/img/pokeballSprite.png"), "Party Pokemon", showGroup);
   connect(showParty, SIGNAL(toggled(bool)), _view->getPartyView(), SLOT(setVisible(bool)));
   showParty->setCheckable(true);
+  _view->getPartyView()->setEnabled(false);
   QAction *showBox = new QAction(QIcon(":/img/pokeballSprite.png"), "Box Pokemon", showGroup);
   connect(showBox, SIGNAL(toggled(bool)), _view->getBoxView(), SLOT(setVisible(bool)));
   showBox->setCheckable(true);
+  _view->getBoxView()->setEnabled(false);
   QAction *showPokedex = new QAction(QIcon(":/img/pokeballSprite.png"), "Pokedex", showGroup);
   connect(showPokedex, SIGNAL(toggled(bool)), _view->getPokedexView(), SLOT(setVisible(bool)));
   showPokedex->setCheckable(true);
+  _view->getPokedexView()->setEnabled(false);
 
   QAction *enableCoherency = new QAction(QIcon::fromTheme("insert-link"), "Enable Game Coherency", this);
   connect(enableCoherency, SIGNAL(toggled(bool)), _partyController, SLOT(manageEnableCoherency(bool)));

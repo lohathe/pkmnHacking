@@ -39,12 +39,12 @@ bool PkmnSaveState::openFile(
   // save before deleting?
   if (_data != NULL) {
     delete[] _data;
-    _filepath = filepath;
     _dataLength = 0;
   }
 
   inputFile.seekg(0, std::ios::end);
 
+  _filepath = filepath;
   _dataLength = inputFile.tellg();
   _data = new byte[_dataLength];
 
@@ -63,6 +63,12 @@ bool PkmnSaveState::openFile(
   }
 
   return true;
+
+}
+
+bool PkmnSaveState::fileLoaded() const {
+
+  return _filepath.size() > 0;
 
 }
 

@@ -54,7 +54,8 @@ void PkmnPokedexView::connectModel(PkmnSaveStateModel *model) {
   connect(_model, SIGNAL(changedPkmnPokedexEvent()),
           this, SLOT(updateList()));
 
-  updateList();
+  if ( _model -> fileLoaded() )
+    updateList();
 
 }
 

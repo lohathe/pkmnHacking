@@ -118,8 +118,10 @@ void PkmnPartyView::connectModel(PkmnSaveStateModel *model) {
 
 void PkmnPartyView::manageChangedPkmnPartyList() {
 
-  _partyList -> updateWholeList(_model -> getPartyPkmnList());
-  _partyList -> setSelectedPartyPkmn(_selectedPartyPkmn);
+  if (_model -> fileLoaded()) {
+    _partyList -> updateWholeList(_model -> getPartyPkmnList());
+    _partyList -> setSelectedPartyPkmn(_selectedPartyPkmn);
+  }
 
 }
 
